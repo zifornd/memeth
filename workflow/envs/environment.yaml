@@ -1,0 +1,22 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconductor-minfi
+  - r-ggplot2
+  - bioconductor-illuminahumanmethylation450kmanifest
+
+#sesameData
+#minfi
+#RColorBrewer
+#org.Hs.eg.db
+#DNAcopy
+#conumee
+#minfiData
+#sva
+#IlluminaHumanMethylationEPICanno.ilm10b4.hg19
+# shinyMethyl
+# ggplot2
+# IlluminaMethylationManifest
+# IlluminaHumanMethylationEPICmanifest
