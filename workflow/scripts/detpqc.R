@@ -3,8 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
-
 
 qcPval <- function(detP,targets, output, fill){
   
@@ -24,16 +22,16 @@ qcPval <- function(detP,targets, output, fill){
   
   dev.off()
   
-  pdf(output, width = 12)
+  # pdf(output, width = 12)
   
-  par(mar = c(9,8,1,1))
-  barplot(data, col = pal[factor(targets$Sample_Group)], las = 2,
-          cex.names = 0.8, ylim = c(0,0.002), ylab = "Mean detection p-values\n")
-  abline(h = 0.01, col = "red")
-  legend("topright", legend = levels(factor(targets$Sample_Group)), fill = pal,
-         bg = "white")
+  # par(mar = c(9,8,1,1))
+  # barplot(data, col = pal[factor(targets$Sample_Group)], las = 2,
+  #         cex.names = 0.8, ylim = c(0,0.002), ylab = "Mean detection p-values\n")
+  # abline(h = 0.01, col = "red")
+  # legend("topright", legend = levels(factor(targets$Sample_Group)), fill = pal,
+  #        bg = "white")
   
-  dev.off()
+  # dev.off()
 
 }
 
@@ -52,17 +50,15 @@ main <- function(input, output, params, log) {
   # Script
   
   library(minfi)
-  
-  library(params$platform, character.only = TRUE)
-  
+   
   # tsv file location
   
   RGset <- readRDS(input$rds)
   
-  detP <- detectionP(RGSet)
-  targets <- params$targets
-  fill <- params$fill
-
+  detP <- detectionP(RGset)
+  #targets <- params$targets
+  targets <- read.metharray.sheet(params$dir)
+  fill <- strsplit(params$fill, ",")[[1]]
   qcPval(detP, targets,output$pdf, fill)
   
 

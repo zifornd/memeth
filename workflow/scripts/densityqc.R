@@ -3,7 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
 
 getData <- function(GRset, type){
   
@@ -23,16 +22,16 @@ getData <- function(GRset, type){
 }
 
 
-plotDensity <- function(data, phenoData, output, colour_details){
+plotDensity <- function(data, phenodata, output, fill){
   
   
   ## Density plot
   pdf(output)
   
-  densityPlot(data, sampGroups = phenoData$Sample_Group, legend = F, pal = colour_details)
+  densityPlot(data, sampGroups = phenodata$Sample_Group, legend = F, pal = fill)
   
-  legend("top", legend = levels(factor(phenoData$Sample_Group)),
-         text.col=colour_details)
+  legend("top", legend = levels(factor(phenodata$Sample_Group)),
+         text.col=fill)
   
   dev.off()
   
@@ -56,17 +55,18 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   library(ggplot2)
-  library(params$platform, character.only = TRUE)
   
   GRset <- readRDS(input$rds)
   
   data <- getData(GRset, params$type)
+
+  #phenodata <- read.metharray.sheet(params$dir)
   
-  phenoData <- params$phenoData
+  phenodata <- pData(GRset)
+
+  fill <- strsplit(params$fill, ",")[[1]]
   
-  colour_details <- params$colour_details
-  
-  plotDensity(data, phenoData, output$pdf, colour_details)
+  plotDensity(data, phenodata, output$pdf, fill)
   
 
 }

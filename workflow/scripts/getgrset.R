@@ -3,8 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
-
 main <- function(input, output, params, log) {
   
   # Log
@@ -21,13 +19,11 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   
-  library(params$platform, character.only = TRUE)
-  
   RSet <- readRDS(input$rds)
   
   GRset <- mapToGenome(RSet)
   
-  saveRDS(RGset, file = output$rds)
+  saveRDS(GRset, file = output$rds)
   
 }
 

@@ -3,8 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
-
 filterByDetP <- function(GRset, RGset){
   
   detP <- detectionP(RGSet)
@@ -43,7 +41,7 @@ filterByXReactiveProbes <- function(GRset, xprobes){
   
   xReactiveProbes <- xprobes
   
-  keep <- !(featureNames(GRset) %in% xReactiveProbes$ï..TargetID)
+  keep <- !(featureNames(GRset) %in% xReactiveProbes$ï¿½..TargetID)
   
   GRset <- GRset[keep,]
   
@@ -81,9 +79,7 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   library(sesameData)
-  
-  library(params$platform, character.only = TRUE)
-  
+    
   GRset <- readRDS(input$rds)
   
   # or could do hg38Anno <- sesameDataGetAnno("EPIC/EPIC.hg38.manifest.rds")

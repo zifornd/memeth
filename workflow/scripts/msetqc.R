@@ -3,8 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
-
 main <- function(input, output, params, log) {
   
   # Log
@@ -21,23 +19,19 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   library(ggplot2)
-  library(params$platform, character.only = TRUE)
-  
+ 
   # tsv file location
   
   MSet <- readRDS(input$rds)
-  
-  baseDir <- params$baseDir
-  
+    
   qc <- getQC(MSet)
   
-  # I think is ggplot2 obj
-  #pdf(paste0(baseDir, "/QC_Meth_Unmeth/QCPlot_PreNorm.pdf"))
-  p = plotQC(qc)
-  #dev.off()
-  
-  ggsave(output$pdf, plot = p)
-  
+  pdf(output$pdf)
+
+  plotQC(qc)
+
+  dev.off()
+
 }
 
 main(snakemake@input, snakemake@output, snakemake@params, snakemake@log)

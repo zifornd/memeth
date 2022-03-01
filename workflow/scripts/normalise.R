@@ -3,8 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
-
 normalise <- function(RGset, type) {
   
   if(type == "preprocessFunnorm"){
@@ -67,12 +65,9 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   
-  library(params$platform, character.only = TRUE)
-  
-  # tsv file location
-  
   RGset <- readRDS(input$rds)
   
+  print(sessionInfo())
   GRset <- normalise(RGset, type = params$type)
   
   saveRDS(GRset, file = output$rds)

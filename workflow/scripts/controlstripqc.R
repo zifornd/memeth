@@ -3,8 +3,6 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
-
 main <- function(input, output, params, log) {
   
   # Log
@@ -20,12 +18,8 @@ main <- function(input, output, params, log) {
   # Script
   
   library(minfi)
-  
-  library(params$platform, character.only = TRUE)
-  
-  # tsv file location
-  
-  RGset <- readRDS(input$rds)
+      
+  RGSet <- readRDS(input$rds)
 
   qcReport(RGSet, pdf= output$pdf)
   

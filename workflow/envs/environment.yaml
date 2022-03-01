@@ -5,17 +5,20 @@ channels:
 dependencies:
   - bioconductor-minfi
   - r-ggplot2
+  - r-reshape2
+  - libblas
   - bioconductor-illuminahumanmethylation450kmanifest
+  - bioconductor-illuminahumanmethylation450kanno.ilmn12.hg19
 
-#sesameData
-#minfi
-#RColorBrewer
-#org.Hs.eg.db
-#DNAcopy
-#conumee
-#minfiData
-#sva
-#IlluminaHumanMethylationEPICanno.ilm10b4.hg19
+# sesameData
+# minfi
+# RColorBrewer
+# org.Hs.eg.db
+# DNAcopy
+# conumee
+# minfiData
+# sva
+# IlluminaHumanMethylationEPICanno.ilm10b4.hg19
 # shinyMethyl
 # ggplot2
 # IlluminaMethylationManifest

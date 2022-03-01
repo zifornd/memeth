@@ -1,1 +1,8 @@
 samples: "config/samples.tsv"
+
+fill:
+
+  detpqc: "Red,Blue"
+  densityqc: "Red,Blue"
+  boxplotqc: "Red,Blue"
+  

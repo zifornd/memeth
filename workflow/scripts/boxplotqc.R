@@ -3,15 +3,13 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
 
-
-plotBoxplots <- function(beta, phenoData, colour_details){
+plotBoxplots <- function(beta, phenodata, fill){
   
   t_beta = t(beta)
   t_beta = as.data.frame(t_beta, drop=FALSE)
-  t_beta$Sample_name = phenoData$Sample_Name
-  t_beta$Group = as.character(phenoData$Sample_Group)
+  t_beta$Sample_name = phenodata$Sample_Name
+  t_beta$Group = as.character(phenodata$Sample_Group)
   melt_beta = melt(t_beta)
 
   colnames(melt_beta) = c("Sample","Group", "CpG", "B.Val" )
@@ -19,7 +17,7 @@ plotBoxplots <- function(beta, phenoData, colour_details){
   bp <- ggplot(melt_beta, aes(x=Sample, y=B.Val, fill = Group)) + 
     geom_boxplot()+
     labs(title="B vals Samples Pre Norm",x="Sample", y = "B.Val") + 
-    theme_classic() + coord_flip() + scale_fill_manual(values=colour_details)
+    theme_classic() + coord_flip() + scale_fill_manual(values=fill)
 
   return(bp)
   
@@ -42,17 +40,17 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   library(ggplot2)
-  
-  library(params$platform, character.only = TRUE)
-  
+  library(reshape2)
+
   GRset <- readRDS(input$rds)
+  
   beta <- getBeta(GRset)
   
-  phenoData <- params$phenoData
+  phenodata <- pData(GRset)
   
-  colour_details <- params$colour_details
+  fill <- strsplit(params$fill, ",")[[1]]
   
-  bp <- plotBoxplots(beta, phenoData, colour_details)
+  bp <- plotBoxplots(beta, phenodata, fill)
   
   ggsave(output$pdf, plot = bp)
   
