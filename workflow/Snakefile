@@ -12,8 +12,11 @@ rule all:
         "results/densityqcm_pre.pdf",
         "results/controlstripqc.pdf",
         "results/boxplotqc_pre.pdf",
-        "results/normalise.rds"
-
+        "results/normalise.rds",
+        "results/densityqcbeta_post.pdf",
+        "results/densityqcm_post.pdf",
+        "results/boxplotqc_post.pdf",
+        "results/filter.rds"
 
 # import original RGSet object using minfi
 rule import:
@@ -209,3 +212,102 @@ rule normalise:
         "envs/environment.yaml"
     script:
         "scripts/normalise.R"
+
+# run Density qc for GRset object
+rule densityqcbeta_post:
+    input:
+        rds = "results/normalise.rds"
+    output:
+        pdf = "results/densityqcbeta_post.pdf"
+    params:
+        dir = "data",
+        fill = config["fill"]["densityqc"],
+        type = "beta"
+    log:
+        out = "results/densityqcbeta_post.out",
+        err = "results/densityqcbeta_post.err"
+    message:
+        "Run Density QC for GRset object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/densityqc.R"
+
+# run Density qc for GRset object
+rule densityqcm_post:
+    input:
+        rds = "results/normalise.rds"
+    output:
+        pdf = "results/densityqcm_post.pdf"
+    params:
+        dir = "data",
+        fill = config["fill"]["densityqc"],
+        type = "M"
+    log:
+        out = "results/densityqcm_post.out",
+        err = "results/densityqcm_post.err"
+    message:
+        "Run Density QC for GRset object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/densityqc.R"
+
+# run Density qc for GRset object
+rule boxplotqc_post:
+    input:
+        rds = "results/normalise.rds"
+    output:
+        pdf = "results/boxplotqc_post.pdf"
+    params:
+        dir = "data",
+        fill = config["fill"]["boxplotqc"]
+    log:
+        out = "results/boxplotqc_post.out",
+        err = "results/boxplotqc_post.err"
+    message:
+        "Run Boxplot QC for GRset object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/boxplotqc.R"
+
+
+# Filter non specific probes - see filter.R for more details
+# Makes big difference to downstream analysis
+rule filter:
+    input:
+        rds = "results/normalise.rds"
+    output:
+        rds = "results/filter.rds"
+    params:
+        rgset = "results/import.rds",
+        xprobes = "resources/48639-non-specific-probes-Illumina450k.csv",
+        anno = "hg38",
+        array = "HM450"
+    log:
+        out = "results/filter.out",
+        err = "results/filter.err"
+    message:
+        "Run Filter for normailsed rds"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/filter.R"
+
+# PCA
+
+
+# Density heatmap
+
+
+
+# DMRCate Cpg
+
+
+
+# DMRCate DMR
+
+
+
+#  Rank plot

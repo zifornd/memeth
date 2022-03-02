@@ -41,7 +41,7 @@ filterByXReactiveProbes <- function(GRset, xprobes){
   
   xReactiveProbes <- xprobes
   
-  keep <- !(featureNames(GRset) %in% xReactiveProbes$�..TargetID)
+  keep <- !(featureNames(GRset) %in% xReactiveProbes$TargetID)
   
   GRset <- GRset[keep,]
   
@@ -49,10 +49,10 @@ filterByXReactiveProbes <- function(GRset, xprobes){
   
 }
 
-filterByExtendedAnno <- function(GRset, hg38Anno){
+filterByExtendedAnno <- function(GRset, anno){
   
-  ### Drop all probes that are cross reactive, dont map to hg38, extended SNP annotation (see Nucleic acid research paper)
-  cpg_mask <- names(hg38_anno)[hg38_anno$MASK_general == TRUE]
+  ### Drop all probes that are cross reactive, dont map to hg38/hg19, extended SNP annotation (see Nucleic acid research paper)
+  cpg_mask <- names(anno)[anno$MASK_general == TRUE]
   
   keep <- !(featureNames(GRset) %in% cpg_mask)
   
@@ -62,6 +62,16 @@ filterByExtendedAnno <- function(GRset, hg38Anno){
   
 }
 
+getAnno <- function(annoType = "hg38", array = "HM450"){
+
+  sesameDataCache(array)
+
+  # anno <- sesameDataGetAnno("EPIC/EPIC.hg38.manifest.rds")
+  anno <- sesameDataGetAnno(paste0(array, "/", array, ".", annoType, ".manifest.rds"))
+
+  return(anno)
+
+}
 
 main <- function(input, output, params, log) {
   
@@ -83,8 +93,12 @@ main <- function(input, output, params, log) {
   GRset <- readRDS(input$rds)
   
   # or could do hg38Anno <- sesameDataGetAnno("EPIC/EPIC.hg38.manifest.rds")
-  hg38Anno <- readRDS(params$hg38rds)
-  RGset <- readRDS(params$RGset)
+  # anno <- readRDS(params$anno)
+  
+  # Have gone with downloading the annotation per analysis - but can add to /resources if too slow
+  anno <- getAnno(params$anno, params$array)
+  
+  RGset <- readRDS(params$rgset)
   
   # "48639-non-specific-probes-Illumina450k.csv"
   xprobes <- read.csv(file=params$xprobes, stringsAsFactors=FALSE)
@@ -93,8 +107,11 @@ main <- function(input, output, params, log) {
   GRsetFilt <- filterBySexChrom(GRset)
   GRsetFilt <- filterBySnpProbes(GRset)
   GRsetFilt <- filterByXReactiveProbes(GRset, xprobes)
-  GRsetFilt <- filterByExtendedAnno(GRset, hg38Anno)
+  GRsetFilt <- filterByExtendedAnno(GRset, anno)
   
+  # Note we may like to add additional filtering based on updates to manifest from Illumina:
+  # See https://github.com/sirselim/illumina450k_filtering
+
   saveRDS(GRsetFilt, file = output$rds)
   
 }
