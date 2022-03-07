@@ -5,7 +5,7 @@
 
 filterByDetP <- function(GRset, RGset){
   
-  detP <- detectionP(RGSet)
+  detP <- detectionP(RGset)
   
   detP <- detP[match(featureNames(GRset),rownames(detP)),]
   
@@ -62,12 +62,22 @@ filterByExtendedAnno <- function(GRset, anno){
   
 }
 
-getAnno <- function(annoType = "hg38", array = "HM450"){
+getAnno <- function(annoType = "hg38", array = "HM450", static = TRUE){
 
-  sesameDataCache(array)
 
   # anno <- sesameDataGetAnno("EPIC/EPIC.hg38.manifest.rds")
-  anno <- sesameDataGetAnno(paste0(array, "/", array, ".", annoType, ".manifest.rds"))
+
+  if(static){
+
+    anno <- readRDS(paste0("resources/", array, ".", annoType, ".manifest.rds"))
+
+  } 
+  if(!static) {
+
+    sesameDataCache(array)
+
+    anno <- sesameDataGetAnno(paste0(array, "/", array, ".", annoType, ".manifest.rds"))
+  }
 
   return(anno)
 
@@ -88,7 +98,7 @@ main <- function(input, output, params, log) {
   # Script
   
   library(minfi)
-  library(sesameData)
+  #library(sesameData)
     
   GRset <- readRDS(input$rds)
   
@@ -96,7 +106,7 @@ main <- function(input, output, params, log) {
   # anno <- readRDS(params$anno)
   
   # Have gone with downloading the annotation per analysis - but can add to /resources if too slow
-  anno <- getAnno(params$anno, params$array)
+  anno <- getAnno(params$anno, params$array, params$static)
   
   RGset <- readRDS(params$rgset)
   

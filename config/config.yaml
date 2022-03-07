@@ -5,6 +5,5 @@ fill:
   detpqc: "Red,Blue"
   densityqc: "Red,Blue"
   boxplotqc: "Red,Blue"
-
-
+  pca: "Red,Blue"
 

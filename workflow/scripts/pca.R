@@ -9,8 +9,9 @@ plotPCA <- function(x, ...) {
   
 }
 
-plotPCA.ExpressionSet <- function(x, col) {
+plotPCA.GenomicRatioSet <- function(x, col, fill) {
   
+  print(fill)
   mat <- getBeta(x)
   
   var <- matrixStats::rowVars(mat)
@@ -25,12 +26,13 @@ plotPCA.ExpressionSet <- function(x, col) {
   
   dat <- data.frame(PC1 = pca$x[,1], PC2 = pca$x[,2], group = pData(x)[, col])
   
-  ggplot(dat, aes_string(x = "PC1", y = "PC2", color = "group")) + 
+  p <- ggplot(dat, aes_string(x = "PC1", y = "PC2", color = "group")) + 
     geom_point(size = 3) + 
     xlab(paste0("PC1: ", round(pct[1] * 100), "% variance")) + 
     ylab(paste0("PC2: ", round(pct[2] * 100), "% variance")) + 
-    coord_fixed()
+    coord_fixed() + scale_colour_manual(values=fill)
   
+  return(p)
 }
 
 main <- function(input, output, params, log) {
@@ -53,7 +55,9 @@ main <- function(input, output, params, log) {
   
   x <- readRDS(input$rds)
   
-  p <- plotPCA(x, col = params$col)
+  fill = strsplit(params$fill, ",")[[1]]
+
+  p <- plotPCA(x, col = params$group, fill = fill)
   
   ggsave(output$pdf, plot = p)
   

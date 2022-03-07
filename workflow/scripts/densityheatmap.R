@@ -3,7 +3,24 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-.libPaths(new = "resources/bioconductor/platform/lib/R/library")
+densityHeatmapWrap <- function(GRset, col, samples_names, fill, cluster_columns = TRUE, clustering_distance_columns = "ks"){
+
+  names(fill) = pData(GRset)[, col]
+
+  ha1 = HeatmapAnnotation(group = pData(GRset)[, col], col = list(group = fill))
+  
+  mat <- as.matrix(getBeta(GRset))
+
+  colnames(mat) <- pData(GRset)[, samples_names]
+
+  p <- densityHeatmap(mat, top_annotation = ha1, 
+                      cluster_columns = cluster_columns, clustering_distance_columns = "ks", 
+                      ylab = "Beta-values")
+  
+  return(p)
+
+}
+
 
 main <- function(input, output, params, log) {
   
@@ -21,15 +38,30 @@ main <- function(input, output, params, log) {
   
   library(minfi)
   library(ComplexHeatmap)
-  library(params$platform, character.only = TRUE)
-  
-  # tsv file location
-  
+    
   GRset <- readRDS(input$rds)
 
-  densityHeatmap(as.matrix(getBeta(GRset)))
+  samples_names <- params$samples_names
+
+  col <- params$group
   
+  fill <- strsplit(params$fill, ",")[[1]]
   
+  cluster_columns <- params$cluster_columns
+  
+  clustering_distance_columns <- params$clustering_distance_columns
+
+  # Plot
+
+  pdf(output$pdf)
+  
+  p <- densityHeatmapWrap(GRset, col, samples_names, fill, cluster_columns = params$cluster_columns, 
+                          clustering_distance_columns = params$clustering_distance_columns)
+
+  draw(p)
+
+  dev.off()
+
 }
 
 main(snakemake@input, snakemake@output, snakemake@params, snakemake@log)

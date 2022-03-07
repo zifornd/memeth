@@ -16,7 +16,10 @@ rule all:
         "results/densityqcbeta_post.pdf",
         "results/densityqcm_post.pdf",
         "results/boxplotqc_post.pdf",
-        "results/filter.rds"
+        "results/filter.rds",
+        "results/pca.pdf",
+        "results/densityheatmap.pdf"
+
 
 # import original RGSet object using minfi
 rule import:
@@ -284,7 +287,8 @@ rule filter:
         rgset = "results/import.rds",
         xprobes = "resources/48639-non-specific-probes-Illumina450k.csv",
         anno = "hg38",
-        array = "HM450"
+        array = "HM450",
+        static = True
     log:
         out = "results/filter.out",
         err = "results/filter.err"
@@ -296,10 +300,45 @@ rule filter:
         "scripts/filter.R"
 
 # PCA
-
+rule pca:
+    input:
+        rds = "results/filter.rds"
+    output:
+        pdf = "results/pca.pdf"
+    params:
+        group = "status",
+        fill = config["fill"]["pca"]
+    log:
+        out = "results/pca.out",
+        err = "results/pca.err"
+    message:
+        "Run pca for normalised filtered object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/pca.R"
 
 # Density heatmap
-
+rule densityheatmap:
+    input:
+        rds = "results/filter.rds"
+    output:
+        pdf = "results/densityheatmap.pdf"
+    params:
+        samples_names = "Sample_Name",
+        group = "status",
+        fill = config["fill"]["densityheatmap"],
+        cluster_columns = True,
+        clustering_distance_columns = "ks"
+    log:
+        out = "results/densityheatmap.out",
+        err = "results/densityheatmap.err"
+    message:
+        "Run densityheatmap for normalised filtered object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/densityheatmap.R"
 
 
 # DMRCate Cpg
