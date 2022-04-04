@@ -18,7 +18,8 @@ rule all:
         "results/boxplotqc_post.pdf",
         "results/filter.rds",
         "results/pca.pdf",
-        "results/densityheatmap.pdf"
+        "results/densityheatmap.pdf",
+        "results/dmrcatecpg.rds"
 
 
 # import original RGSet object using minfi
@@ -342,11 +343,65 @@ rule densityheatmap:
 
 
 # DMRCate Cpg
+# fdr: thres for filtering of cpg calling (will be used for including in DMR calling downstream)
+# coef: column index from design matrix of phenotype of interest (comes from samples.tsv "condition" col) 
+rule dmrcatecpg:
+    input:
+        rds = "results/filter.rds"
+    output:
+        rds = "results/dmrcatecpg.rds"
+    params:
+        samples = "config/samples.tsv",
+        arraytype = "450K",
+        analysistype = "differential",
+        coef = 2,
+        fdr = 0.05
+    log:
+        out = "results/dmrcatecpg.out",
+        err = "results/dmrcatecpg.err"
+    message:
+        "Run dmrcate differential expression per cpg"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/dmrcatecpg.R"
+    
+
+
+# # DMRCate DMR
+# rule dmrcatedmr
+#     input:
+#         rds = "results/dmrcatecpg.rds"
+#     output:
+#         rds = "results/dmrcatedmr.rds"
+#     params:
+#     log:
+#         out = "results/dmrcatedmr.out",
+#         err = "results/dmrcatedmr.err"
+#     message:
+#         "Run dmrcate - merge adjacent cpgs into dmrs"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/dmrcatedmr.R"
+
+
+# #  Rank plot
+# rule rankplot
+#     input:
+#         rds = "results/dmrcatedmr.rds"
+#     output:
+#         rds = "results/rankplot.pdf"
+#     params:
+#     log:
+#         out = "results/rankplot.out",
+#         err = "results/rankplot.err"
+#     message:
+#         "Run rankplot for dmrcate dmr output"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/dmrcatedmr.R"
 
 
 
-# DMRCate DMR
-
-
-
-#  Rank plot

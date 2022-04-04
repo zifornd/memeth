@@ -3,12 +3,12 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
-modelMatrix <- function(object) {
+modelMatrix <- function(data) {
   
   # Get phenotype data
   
-  data <- pData(object)
-  
+  # data <- pData(object)
+
   names <- colnames(data)
   
   # Set condition factor
@@ -63,7 +63,8 @@ modelMatrix <- function(object) {
   
   if (is.condition & !is.batch & !is.block) {
     
-    design <- model.matrix(~ 0 + condition)
+    # design <- model.matrix(~ 0 + condition)
+    design <- model.matrix(~ condition)
     
   }
   
@@ -91,6 +92,9 @@ modelMatrix <- function(object) {
   
   colnames(design)[which.condition] <- levels(condition)
   
+  # Required for DMRcate
+  colnames(design)[1] <- "(Intercept)"
+
   # Return design matrix
   
   design
@@ -116,15 +120,26 @@ main <- function(input, output, params, log, config) {
   library(minfi)
   
   GRset <- readRDS(input$rds)
-  
-  mod <- modelMatrix(GRset)
-  
+  data <- read.table(params$samples, header = T)
+
+  mod <- modelMatrix(data)
+  print(mod)
   #### Run DMRCate 
   
-  GRsetRatio <- ratioConvert(GRset)
-  
-  cpg.annotation <- cpg.annotate("array", GRsetRatio, arraytype = "EPIC",
-                               analysis.type = "differential", design = mod, coef = 2)
+  # Already ratio converted so no need to run below:
+  # GRsetRatio <- ratioConvert(GRset)
+  GRsetRatio <- GRset
+
+  arraytype = params$arraytype
+  analysis.type = params$analysistype
+  coef = params$coef
+  fdr = params$fdr
+
+  # contrasts = TRUE when we supply a limma style matrix (FALSE if design matrix)
+  # design matrix must have intercept however
+  cpg.annotation <- cpg.annotate("array", GRsetRatio, arraytype = arraytype,
+                               analysis.type = analysis.type, design = mod, coef = coef,
+                               contrasts = FALSE, fdr = fdr)
 
   
   saveRDS(cpg.annotation, file = output$rds)

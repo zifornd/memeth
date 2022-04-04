@@ -10,6 +10,7 @@ dependencies:
   - bioconductor-illuminahumanmethylation450kmanifest
   - bioconductor-illuminahumanmethylation450kanno.ilmn12.hg19
   - bioconductor-complexheatmap
+  - bioconductor-dmrcate
 
 # bioconductor-sesamedata - NOTE does not seem to work for some reason - instead am downloading rds as static files and have kept in resources folder
 # minfi
