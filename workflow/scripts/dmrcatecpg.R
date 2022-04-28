@@ -141,7 +141,8 @@ main <- function(input, output, params, log, config) {
                                analysis.type = analysis.type, design = mod, coef = coef,
                                contrasts = FALSE, fdr = fdr)
 
-  
+  #print(head(mcols(cpg.annotation)))
+  print((cpg.annotation@ranges))
   saveRDS(cpg.annotation, file = output$rds)
   
 }

@@ -1,7 +1,7 @@
 sample  condition
-GroupA_1    normal
-GroupA_2    normal
-GroupA_3    normal
 GroupB_1    cancer
 GroupB_2    cancer
 GroupB_3    cancer
+GroupA_1    normal
+GroupA_2    normal
+GroupA_3    normal

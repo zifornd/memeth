@@ -19,7 +19,8 @@ rule all:
         "results/filter.rds",
         "results/pca.pdf",
         "results/densityheatmap.pdf",
-        "results/dmrcatecpg.rds"
+        "results/dmrcatecpg.rds",
+        "results/dmrcatedmr.rds"
 
 
 # import original RGSet object using minfi
@@ -355,7 +356,7 @@ rule dmrcatecpg:
         arraytype = "450K",
         analysistype = "differential",
         coef = 2,
-        fdr = 0.05
+        fdr = 0.25
     log:
         out = "results/dmrcatecpg.out",
         err = "results/dmrcatecpg.err"
@@ -369,21 +370,21 @@ rule dmrcatecpg:
 
 
 # # DMRCate DMR
-# rule dmrcatedmr
-#     input:
-#         rds = "results/dmrcatecpg.rds"
-#     output:
-#         rds = "results/dmrcatedmr.rds"
-#     params:
-#     log:
-#         out = "results/dmrcatedmr.out",
-#         err = "results/dmrcatedmr.err"
-#     message:
-#         "Run dmrcate - merge adjacent cpgs into dmrs"
-#     conda:
-#         "envs/environment.yaml"
-#     script:
-#         "scripts/dmrcatedmr.R"
+rule dmrcatedmr:
+    input:
+        rds = "results/dmrcatecpg.rds"
+    output:
+        rds = "results/dmrcatedmr.rds"
+    params:
+    log:
+        out = "results/dmrcatedmr.out",
+        err = "results/dmrcatedmr.err"
+    message:
+        "Run dmrcate - merge adjacent cpgs into dmrs"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/dmrcatedmr.R"
 
 
 # #  Rank plot
