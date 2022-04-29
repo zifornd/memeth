@@ -3,6 +3,8 @@
 # Email: james.ashmore@zifornd.com ben.southgate@zifornd.com
 # License: MIT
 
+# Sets model matrix
+
 modelMatrix <- function(data) {
   
   # Get phenotype data
@@ -101,6 +103,17 @@ modelMatrix <- function(data) {
   
 }
 
+# Makes sure sample tsv is in the same order as methylation object coldata
+
+checkOrder <- function(sampledata, rds, colname = "Sample_Name") {
+
+  sampledata <- sampledata[match(colData(rds)[[colname]],sampledata$sample),]
+
+  return(sampledata)
+
+}
+
+
 main <- function(input, output, params, log, config) {
   
   # Log
@@ -121,13 +134,15 @@ main <- function(input, output, params, log, config) {
   
   GRset <- readRDS(input$rds)
   data <- read.table(params$samples, header = T)
-
+  data <- checkOrder(data, GRset)
+  
   mod <- modelMatrix(data)
-  print(mod)
+  
   #### Run DMRCate 
   
   # Already ratio converted so no need to run below:
   # GRsetRatio <- ratioConvert(GRset)
+
   GRsetRatio <- GRset
 
   arraytype = params$arraytype
@@ -141,8 +156,6 @@ main <- function(input, output, params, log, config) {
                                analysis.type = analysis.type, design = mod, coef = coef,
                                contrasts = FALSE, fdr = fdr)
 
-  #print(head(mcols(cpg.annotation)))
-  print((cpg.annotation@ranges))
   saveRDS(cpg.annotation, file = output$rds)
   
 }
