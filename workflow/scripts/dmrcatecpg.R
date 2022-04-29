@@ -133,7 +133,9 @@ main <- function(input, output, params, log, config) {
   library(minfi)
   
   GRset <- readRDS(input$rds)
+
   data <- read.table(params$samples, header = T)
+
   data <- checkOrder(data, GRset)
   
   mod <- modelMatrix(data)
@@ -146,8 +148,11 @@ main <- function(input, output, params, log, config) {
   GRsetRatio <- GRset
 
   arraytype = params$arraytype
+
   analysis.type = params$analysistype
+
   coef = params$coef
+  
   fdr = params$fdr
 
   # contrasts = TRUE when we supply a limma style matrix (FALSE if design matrix)
@@ -155,6 +160,9 @@ main <- function(input, output, params, log, config) {
   cpg.annotation <- cpg.annotate("array", GRsetRatio, arraytype = arraytype,
                                analysis.type = analysis.type, design = mod, coef = coef,
                                contrasts = FALSE, fdr = fdr)
+
+  
+  write.csv(as.data.frame(cpg.annotation@ranges), file = output$csv, quote = F)
 
   saveRDS(cpg.annotation, file = output$rds)
   

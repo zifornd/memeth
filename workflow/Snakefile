@@ -348,7 +348,8 @@ rule dmrcatecpg:
     input:
         rds = "results/filter.rds"
     output:
-        rds = "results/dmrcatecpg.rds"
+        rds = "results/dmrcatecpg.rds",
+        csv = "results/dmrcatecpg.csv"
     params:
         samples = "config/samples.tsv",
         arraytype = "450K",
