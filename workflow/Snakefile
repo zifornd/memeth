@@ -19,7 +19,8 @@ rule all:
         "results/filter.rds",
         "results/pca.pdf",
         "results/densityheatmap.pdf",
-        "results/dmrcatecpg.rds"
+        "results/dmrcatecpg.rds",
+        "results/dmrcatedmr.rds"
 
 # import original RGSet object using minfi
 rule import:
@@ -368,22 +369,30 @@ rule dmrcatecpg:
     
 
 
-# # DMRCate DMR
-# rule dmrcatedmr:
-#     input:
-#         rds = "results/dmrcatecpg.rds"
-#     output:
-#         rds = "results/dmrcatedmr.rds"
-#     params:
-#     log:
-#         out = "results/dmrcatedmr.out",
-#         err = "results/dmrcatedmr.err"
-#     message:
-#         "Run dmrcate - merge adjacent cpgs into dmrs"
-#     conda:
-#         "envs/environment.yaml"
-#     script:
-#         "scripts/dmrcatedmr.R"
+# DMRCate DMR
+# Liftover currently supporting hg19 to hg38
+# Can rank DMRs by a number of options 
+# - see https://bioconductor.org/packages/release/bioc/vignettes/DMRcate/inst/doc/DMRcate.pdf
+# Others incluce: Stouffer HMFDR Fisher
+rule dmrcatedmr:
+    input:
+        rds = "results/dmrcatecpg.rds"
+    output:
+        rds = "results/dmrcatedmr.rds",
+        csv = "results/dmrcatedmr.csv"
+    params:
+        liftover = True,
+        chainfile = "resources/hg19ToHg38.over.chain",
+        fdr = "min_smoothed_fdr"
+    log:
+        out = "results/dmrcatedmr.out",
+        err = "results/dmrcatedmr.err"
+    message:
+        "Run dmrcate - merge adjacent cpgs into dmrs"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/dmrcatedmr.R"
 
 
 # #  Rank plot
