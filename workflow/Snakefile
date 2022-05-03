@@ -405,17 +405,18 @@ rule rankplot:
         rds = "results/dmrcatedmr.rds"
     output:
         pdf = "results/rankplot.pdf",
-        csv = "results/rankplot.csv"
+        tsv = "results/rankplot.tsv"
     params:
-        width = 5,
+        width = 3,
         height = 5,
-        textsize = 0.8,
-        pad = 2,
+        textsize = 2.5,
+        pad = 1,
         pointsize = 1,
+        highlight = 60,
         title = "Rankplot DMRs",
         yaxis = "meandiff",
-        number_show = 30,
-        num_score_thres = 0.5,
+        number_show = 10,
+        num_score_thres = 0.4,
         genes_of_interest = None
     log:
         out = "results/rankplot.out",
