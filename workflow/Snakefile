@@ -20,7 +20,8 @@ rule all:
         "results/pca.pdf",
         "results/densityheatmap.pdf",
         "results/dmrcatecpg.rds",
-        "results/dmrcatedmr.rds"
+        "results/dmrcatedmr.rds",
+        "results/rankplot.pdf"
 
 # import original RGSet object using minfi
 rule import:
@@ -395,22 +396,36 @@ rule dmrcatedmr:
         "scripts/dmrcatedmr.R"
 
 
-# #  Rank plot
-# rule rankplot
-#     input:
-#         rds = "results/dmrcatedmr.rds"
-#     output:
-#         rds = "results/rankplot.pdf"
-#     params:
-#     log:
-#         out = "results/rankplot.out",
-#         err = "results/rankplot.err"
-#     message:
-#         "Run rankplot for dmrcate dmr output"
-#     conda:
-#         "envs/environment.yaml"
-#     script:
-#         "scripts/dmrcatedmr.R"
+# Run Rank plot for visualisation of DMR output
+# Can be ranked by meandiff or maxdiff - in the past was meanbetafc (which is essentially meandiff)
+# some of DMRcates outputs have been changed with recent update
+# At current genes of interest can be supplied as a list below - but could be implemented as a json or such format (when as None - take top genes specified as number shown)
+rule rankplot:
+    input:
+        rds = "results/dmrcatedmr.rds"
+    output:
+        pdf = "results/rankplot.pdf",
+        csv = "results/rankplot.csv"
+    params:
+        width = 5,
+        height = 5,
+        textsize = 0.8,
+        pad = 2,
+        pointsize = 1,
+        title = "Rankplot DMRs",
+        yaxis = "meandiff",
+        number_show = 30,
+        num_score_thres = 0.5,
+        genes_of_interest = None
+    log:
+        out = "results/rankplot.out",
+        err = "results/rankplot.err"
+    message:
+        "Run rankplot for dmrcate dmr output"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/rankplot.R"
 
 
 
