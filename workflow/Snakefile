@@ -395,6 +395,26 @@ rule dmrcatedmr:
     script:
         "scripts/dmrcatedmr.R"
 
+# Annotate DMRs with closest gene
+rule annotate:
+    input:
+        rds = "results/dmrcatecpg.rds"
+    output:
+        rds = "results/annotate.rds",
+        csv = "results/annotate.csv"
+    params:
+        outputLoc = "nearestLocation",
+        featureLocForDistance = "TSS",
+        bindingRegion = [-2000, 2000]
+    log:
+        out = "results/annotate.out",
+        err = "results/annotate.err"
+    message:
+        "Run annotation of dmrs"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/annotate.R"
 
 # Run Rank plot for visualisation of DMR output
 # Can be ranked by meandiff or maxdiff - in the past was meanbetafc (which is essentially meandiff)
@@ -402,7 +422,7 @@ rule dmrcatedmr:
 # At current genes of interest can be supplied as a list below - but could be implemented as a json or such format (when as None - take top genes specified as number shown)
 rule rankplot:
     input:
-        rds = "results/dmrcatedmr.rds"
+        rds = "results/annotate.rds"
     output:
         pdf = "results/rankplot.pdf",
         tsv = "results/rankplot.tsv"
