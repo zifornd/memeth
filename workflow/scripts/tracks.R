@@ -95,6 +95,10 @@ combineBeta <- function(label, tracks, colData, by, combine = "mean", samplename
 
 filterTrackOverlaps <- function(tracks){
     
+    library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+  
+    txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
     colnames(mcols(tracks)) <- "score"
   
     seqlevelsStyle(tracks) <- "UCSC"
