@@ -18,6 +18,7 @@ dependencies:
   - bioconductor-genomicranges
   - bioconductor-chippeakanno
   - bioconductor-org.hs.eg.db
+  - bioconductor-rtracklayer
 
 # bioconductor-sesamedata - NOTE does not seem to work for some reason - instead am downloading rds as static files and have kept in resources folder
 # minfi

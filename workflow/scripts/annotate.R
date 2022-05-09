@@ -44,6 +44,7 @@ main <- function(input, output, params, log) {
     
     library(minfi)
     library(DMRcate)
+    library(rtracklayer)
 
     dmrs <- readRDS(input$rds)
     
@@ -61,6 +62,8 @@ main <- function(input, output, params, log) {
     # save output
 
     write.csv(as.data.frame(dmrs), save)
+
+    rtracklayer::export(dmrs, output$bed) 
 
     saveRDS(dmrs, file = output$rds)
 

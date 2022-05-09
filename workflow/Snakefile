@@ -402,7 +402,8 @@ rule annotate:
         rds = "results/dmrcatedmr.rds"
     output:
         rds = "results/annotate.rds",
-        csv = "results/annotate.csv"
+        csv = "results/annotate.csv",
+        bed = "results/annotate.bed"
     params:
         outputLoc = "nearestLocation",
         featureLocForDistance = "TSS",
@@ -450,5 +451,26 @@ rule rankplot:
     script:
         "scripts/rankplot.R"
 
-
-
+# Saves out filtered CpG Beta Signal as BigWig tracks for visualisation
+# Also saves rds obj tracks.rds 
+# If combine is not None then will combine replicates as specified (can also be median)
+rule tracks:
+    input:
+        rds = "results/filter.rds"
+    output:
+        rds = "results/tracks.rds" # saves as a list of GRanges objects formated as BW before being exported via rtracklayer
+    params:
+        anno = "hg38",
+        array = "HM450",
+        combine = "mean",
+        by = "sample", # use what meta data column to combine by
+        bwLocation = "results/"
+    log:
+        out = "results/tracks.out",
+        err = "results/tracks.err"
+    message:
+        "Get BigWig files for CpG Tracks"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/tracks.R"
