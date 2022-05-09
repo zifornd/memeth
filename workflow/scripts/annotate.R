@@ -3,9 +3,14 @@
 addAnno <- function(dmrs, outputLoc = "nearestLocation", featureLocForDistance="TSS", 
                     bindingRegion=c(-2000, 2000)){
 
+    library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+    library(GenomicRanges)
+    library(ChIPpeakAnno)
+    library(org.Hs.eg.db)
+    
     dmrs = GRanges(dmrs)
     
-    annoData <- toGRanges(TxDb.Mmusculus.UCSC.mm10.knownGene)
+    annoData <- toGRanges(TxDb.Hsapiens.UCSC.hg38.knownGene)
     
     seqlevelsStyle(dmrs) <- seqlevelsStyle(annoData)
     
@@ -39,10 +44,6 @@ main <- function(input, output, params, log) {
     
     library(minfi)
     library(DMRcate)
-    library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-    library(GenomicRanges)
-    library(ChIPpeakAnno)
-    library(org.Hs.eg.db)
 
     dmrs <- readRDS(input$rds)
     

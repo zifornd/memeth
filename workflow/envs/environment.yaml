@@ -14,6 +14,10 @@ dependencies:
   - bioconductor-dmrcate
   - bioconductor-dmrcatedata
   - bioconductor-experimenthub
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-genomicranges
+  - bioconductor-chippeakanno
+  - bioconductor-org.hs.eg.db
 
 # bioconductor-sesamedata - NOTE does not seem to work for some reason - instead am downloading rds as static files and have kept in resources folder
 # minfi

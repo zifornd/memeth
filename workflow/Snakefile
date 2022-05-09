@@ -21,6 +21,7 @@ rule all:
         "results/densityheatmap.pdf",
         "results/dmrcatecpg.rds",
         "results/dmrcatedmr.rds",
+        "results/annotate.rds",
         "results/rankplot.pdf"
 
 # import original RGSet object using minfi
@@ -398,7 +399,7 @@ rule dmrcatedmr:
 # Annotate DMRs with closest gene
 rule annotate:
     input:
-        rds = "results/dmrcatecpg.rds"
+        rds = "results/dmrcatedmr.rds"
     output:
         rds = "results/annotate.rds",
         csv = "results/annotate.csv"
