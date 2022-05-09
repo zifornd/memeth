@@ -438,7 +438,8 @@ rule rankplot:
         yaxis = "meandiff",
         number_show = 10,
         num_score_thres = 0.4,
-        genes_of_interest = None
+        genes_of_interest = None, # list of genes of interest for plotting (otherwise will auto label)
+        symbol = "symbol" # column name of annotation for nearest gene to feature for plotting
     log:
         out = "results/rankplot.out",
         err = "results/rankplot.err"

@@ -46,6 +46,8 @@ plotRank <- function(ranked_data, save, genes_of_interest = NULL,
   ranked_data$state = rep(FALSE,length(rownames(ranked_data)))
 
   ranked_data$state = ifelse(ranked_data$rank %in% 1:highlight | ranked_data$rank %in% (length(ranked_data$rank)-highlight):length(ranked_data$rank), "Yes", "No")
+
+  # This will also pick up DMRs with associated genes that are not unique (multiple peaks per gene if they are within the top hits)
   ranked_data$state = ifelse(ranked_data$symbol %in% genes_of_interest & abs(ranked_data$score) > num_score_thres, "Highlight", ranked_data$state)
   
   # Write out underlying CSV file of rank in case required downstream
@@ -54,13 +56,15 @@ plotRank <- function(ranked_data, save, genes_of_interest = NULL,
 
   # Ggplot obj
 
+  num_highlight <- round(min(number_show, nrow(ranked_data[ranked_data$state == "Highlight",]))/2)
+  highlight_df <- rbind.data.frame(head(ranked_data[ranked_data$state == "Highlight",], num_highlight), tail(ranked_data[ranked_data$state == "Highlight",], num_highlight))
+                        
   p = ggplot(ranked_data, aes(rank, score)) +
         geom_point(aes(col=state), size = pointsize, alpha = 0.5) + 
         geom_point(data = subset(ranked_data, state %in% c('Yes')), aes(col = state), size = pointsize, alpha = 0.05) + 
         geom_point(data = subset(ranked_data, state %in% c("Highlight")), aes(col = state), size = pointsize, alpha = 0.5) +
         scale_color_manual(values = c("#f05b5b", "#828282", "#5b88f0"), guide = FALSE) +
-        geom_text_repel(data = rbind.data.frame(head(ranked_data[ranked_data$state == "Highlight",],number_show)), aes(label = symbol), 
-                        size = textsize, point.padding = pad) + 
+        geom_text_repel(data = highlight_df, aes(label = symbol), size = textsize, point.padding = pad) + 
         geom_rect(data = head(ranked_data, 1), aes(ymin=-num_score_thres, ymax=num_score_thres, xmin=-Inf, xmax=Inf), alpha= 0.5) +
         geom_hline(yintercept = 0, linetype="solid", color = "black", size=0.5, alpha= 0.5) + 
         geom_hline(yintercept = -num_score_thres, linetype="dashed", color = "black", size=0.5, alpha= 0.5) + 
@@ -112,8 +116,10 @@ main <- function(input, output, params, log) {
   number_show <- params$number_show
   num_score_thres <- params$num_score_thres
 
+  symbol <- params$symbol # overlapping.genes
+
   # Run prep results table 
-  ranked_data <- prepRes(results, yaxis)
+  ranked_data <- prepRes(results, yaxis, symbol = symbol)
 
   # Plot rank plot
   p <- plotRank(ranked_data, save, genes_of_interest,
