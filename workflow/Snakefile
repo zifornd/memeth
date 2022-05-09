@@ -22,7 +22,8 @@ rule all:
         "results/dmrcatecpg.rds",
         "results/dmrcatedmr.rds",
         "results/annotate.rds",
-        "results/rankplot.pdf"
+        "results/rankplot.pdf",
+        "results/tracks.rds"
 
 # import original RGSet object using minfi
 rule import:
@@ -462,7 +463,7 @@ rule tracks:
     params:
         anno = "hg38",
         array = "HM450",
-        combine = "mean",
+        combine = None,
         by = "sample", # use what meta data column to combine by
         bwLocation = "results/"
     log:

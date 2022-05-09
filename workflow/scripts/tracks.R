@@ -1,6 +1,6 @@
+# Get List of Granges ready to made into track
 
-
-addAnno <- function(filter, anno = "hg38", array = "HM450", combine = "mean", by = "status"){
+getTrackObj <- function(filter, anno = "hg38", array = "HM450", combine = "mean", by = "status"){
   
   library(TxDb.Hsapiens.UCSC.hg38.knownGene)
   
@@ -45,22 +45,8 @@ addAnno <- function(filter, anno = "hg38", array = "HM450", combine = "mean", by
     
     names(tracksList) = colnames(mcols(tracks))
     
-    tracksList <- lapply(tracksList, function(x){tracks <- x
-                                                 colnames(mcols(tracks)) <- "score"
-                                                 seqlevelsStyle(tracks) <- "UCSC"
-                                                 seqlevels(tracks) <- seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]
-                                                 seqinfo(tracks) <- seqinfo(txdb)[seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]]
-
-                                                 # take tracks which share boundaries are remove them
-                                                 tracks <- tracks[!tail(start(tracks), -1) <= head(end(tracks), -1)]
-                                                 
-                                                 # resort
-                                                 tracks <- sort(tracks)
-                                                 
-                                                 return(tracks)})
-    
-    
-    
+    tracksList <- lapply(tracksList, filterTrackOverlaps)
+      
     
   } else {
     
@@ -101,20 +87,30 @@ combineBeta <- function(label, tracks, colData, by, combine = "mean", samplename
   
   mcols(tracks_new) <- combineMeta
   
-  colnames(mcols(tracks_new)) <- "score"
-  
-  seqlevelsStyle(tracks) <- "UCSC"
-  seqlevels(tracks) <- seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]
-  seqinfo(tracks) <- seqinfo(txdb)[seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]]
-  
-  # take tracks which share boundaries are remove them
-  tracks <- tracks[!tail(start(tracks), -1) <= head(end(tracks), -1)]
-  
-  # resort
-  tracks <- sort(tracks)
+  tracks_new <- filterTrackOverlaps(tracks_new)
   
   return(tracks_new)
   
+}
+
+filterTrackOverlaps <- function(tracks){
+    
+    colnames(mcols(tracks)) <- "score"
+  
+    seqlevelsStyle(tracks) <- "UCSC"
+
+    seqlevels(tracks) <- seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]
+
+    seqinfo(tracks) <- seqinfo(txdb)[seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]]
+  
+    # take tracks which share boundaries are remove them
+    tracks <- tracks[!tail(start(tracks), -1) <= head(end(tracks), -1)]
+  
+    # resort
+    tracks <- sort(tracks)
+
+    return(tracks)
+
 }
 
 saveTrack <- function(sample, tracks, fileExt = ".BigWig", location = "./"){
@@ -157,11 +153,14 @@ main <- function(input, output, params, log) {
     save <- output$rds
   
     # run annotation
-    tracks = getTracks(filter, anno, array, combine, by)
-    
+    tracks = getTrackObj(filter, anno, array, combine, by)
+  
     # save output
-    # export a bigwig per sample (depending on how its been joined above)
-    lapply(tracks, saveTrack)
+    # Bigwig
+    lapply(names(tracks), saveTrack, track = tracks, fileExt = ".BigWig", location = params$bwLocation )
+
+    # Bedgraph
+    lapply(names(tracks), saveTrack, track = tracks, fileExt = ".bedGraph", location = params$bwLocation)
 
     # save out list of GRanges 
     saveRDS(tracks, file = output$rds)
