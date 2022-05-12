@@ -24,9 +24,9 @@ rule dmrcatecpg:
     message:
         "Run dmrcate differential expression per cpg"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/dmrcatecpg.R"
+        "../scripts/dmrcatecpg.R"
 
 # DMRCate DMR
 # Liftover currently supporting hg19 to hg38
@@ -49,6 +49,6 @@ rule dmrcatedmr:
     message:
         "Run dmrcate - merge adjacent cpgs into dmrs"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/dmrcatedmr.R"
+        "../scripts/dmrcatedmr.R"

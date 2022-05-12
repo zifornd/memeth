@@ -17,6 +17,6 @@ rule normalise:
     message:
         "Normalise RGSet (Will also ratio convert and annotate to GRSet)"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/normalise.R"
+        "../scripts/normalise.R"

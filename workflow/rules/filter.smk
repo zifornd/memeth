@@ -22,6 +22,6 @@ rule filter:
     message:
         "Run Filter for normailsed rds"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/filter.R"
+        "../scripts/filter.R"

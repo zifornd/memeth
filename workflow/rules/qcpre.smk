@@ -15,9 +15,9 @@ rule controlstripqc:
     message:
         "Run QC for RG Set object (QC baked into minfi)"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/controlstripqc.R"
+        "../scripts/controlstripqc.R"
 
 # run detection p value qc for RGset objects
 rule detpqc:
@@ -34,9 +34,9 @@ rule detpqc:
     message:
         "Plot detection p-value QC for RGSeq object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/detpqc.R"
+        "../scripts/detpqc.R"
 
 # run qc for methyl seq object
 rule msetqc:
@@ -50,9 +50,9 @@ rule msetqc:
     message:
         "Run QC for Methyl Set object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/msetqc.R"
+        "../scripts/msetqc.R"
 
 # run Density qc for GRset object
 rule densityqcbeta_pre:
@@ -70,9 +70,9 @@ rule densityqcbeta_pre:
     message:
         "Run Density QC for GRset object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/densityqc.R"
+        "../scripts/densityqc.R"
 
 # run Density qc for GRset object
 rule densityqcm_pre:
@@ -90,9 +90,9 @@ rule densityqcm_pre:
     message:
         "Run Density QC for GRset object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/densityqc.R"
+        "../scripts/densityqc.R"
 
 # run Density qc for GRset object
 rule boxplotqc_pre:
@@ -109,8 +109,8 @@ rule boxplotqc_pre:
     message:
         "Run Boxplot QC for GRset object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/boxplotqc.R"
+        "../scripts/boxplotqc.R"
 
 

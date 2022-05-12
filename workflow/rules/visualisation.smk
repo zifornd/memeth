@@ -32,9 +32,9 @@ rule rankplot:
     message:
         "Run rankplot for dmrcate dmr output"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/rankplot.R"
+        "../scripts/rankplot.R"
 
 # Saves out filtered CpG Beta Signal as BigWig tracks for visualisation
 # Also saves rds obj tracks.rds 
@@ -56,6 +56,6 @@ rule tracks:
     message:
         "Get BigWig files for CpG Tracks"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/tracks.R"
+        "../scripts/tracks.R"

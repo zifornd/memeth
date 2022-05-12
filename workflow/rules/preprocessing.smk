@@ -15,9 +15,9 @@ rule import:
     message:
         "Importing data..."
     conda:
-        "envs/minfi.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/import.R"
+        "../scripts/import.R"
 
 # get MethylSet object (from RGSet)
 rule getmset:
@@ -31,9 +31,9 @@ rule getmset:
     message:
         "Converting RGset to MSet"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/getmset.R"
+        "../scripts/getmset.R"
 
 # get Ratio set object, have options for Beta and M values
 rule getrset:
@@ -50,9 +50,9 @@ rule getrset:
     message:
         "Converting MSet to RSet"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/getrset.R"
+        "../scripts/getrset.R"
 
 # get Gene Ratio set object GRset
 rule getgrset:
@@ -66,6 +66,6 @@ rule getgrset:
     message:
         "Converting MSet to GRSet"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/getgrset.R"
+        "../scripts/getgrset.R"

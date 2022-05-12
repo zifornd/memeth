@@ -18,9 +18,9 @@ rule pca:
     message:
         "Run pca for normalised filtered object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/pca.R"
+        "../scripts/pca.R"
 
 # Density heatmap
 rule densityheatmap:
@@ -40,6 +40,6 @@ rule densityheatmap:
     message:
         "Run densityheatmap for normalised filtered object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/densityheatmap.R"
+        "../scripts/densityheatmap.R"

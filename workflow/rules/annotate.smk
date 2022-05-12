@@ -21,6 +21,6 @@ rule annotate:
     message:
         "Run annotation of dmrs"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/annotate.R"
+        "../scripts/annotate.R"

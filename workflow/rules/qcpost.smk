@@ -19,9 +19,9 @@ rule densityqcbeta_post:
     message:
         "Run Density QC for GRset object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/densityqc.R"
+        "../scripts/densityqc.R"
 
 # run Density qc for GRset object
 rule densityqcm_post:
@@ -39,9 +39,9 @@ rule densityqcm_post:
     message:
         "Run Density QC for GRset object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/densityqc.R"
+        "../scripts/densityqc.R"
 
 # run Density qc for GRset object
 rule boxplotqc_post:
@@ -58,6 +58,6 @@ rule boxplotqc_post:
     message:
         "Run Boxplot QC for GRset object"
     conda:
-        "envs/environment.yaml"
+        "../envs/environment.yaml"
     script:
-        "scripts/boxplotqc.R"
+        "../scripts/boxplotqc.R"
