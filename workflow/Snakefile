@@ -1,16 +1,5 @@
 configfile: "config/config.yaml"
 
-# Workflow rules
-include: "rules/preprocessing.smk"
-include: "rules/qcpre.smk"
-# include: "rules/qcpost.smk"
-# include: "rules/normalise.smk"
-# include: "rules/filter.smk"
-# include: "rules/eda.smk"
-# include: "rules/diffmeth.smk"
-# include: "rules/annotate.smk"
-# include: "rules/visualisation.smk"
-
 rule all:
     input:
         "results/import.rds",
@@ -23,22 +12,32 @@ rule all:
         "results/densityqcm_pre.pdf",
         "results/controlstripqc.pdf",
         "results/boxplotqc_pre.pdf",
-        # "results/normalise.rds",
-        # "results/densityqcbeta_post.pdf",
-        # "results/densityqcm_post.pdf",
-        # "results/boxplotqc_post.pdf",
-        # "results/filter.rds",
-        # "results/pca.pdf",
-        # "results/densityheatmap.pdf",
-        # "results/dmrcatecpg.rds",
-        # "results/dmrcatedmr.rds",
-        # "results/annotate.rds",
-        # "results/rankplot.pdf",
-        # "results/tracks.rds"
+        "results/normalise.rds",
+        "results/densityqcbeta_post.pdf",
+        "results/densityqcm_post.pdf",
+        "results/boxplotqc_post.pdf",
+        "results/filter.rds",
+        "results/pca.pdf",
+        "results/densityheatmap.pdf",
+        "results/dmrcatecpg.rds",
+        "results/dmrcatedmr.rds",
+        "results/annotate.rds",
+        "results/rankplot.pdf",
+        "results/tracks.rds"
+
+# Workflow rules
+include: "rules/preprocessing.smk"
+include: "rules/qcpre.smk"
+include: "rules/normalise.smk"
+include: "rules/qcpost.smk"
+include: "rules/filter.smk"
+include: "rules/eda.smk"
+include: "rules/diffmeth.smk"
+include: "rules/annotate.smk"
+include: "rules/visualisation.smk"
 
 
-
-# # import original RGSet object using minfi
+# # # import original RGSet object using minfi
 # rule import:
 #     input:
 #         dir = "data"

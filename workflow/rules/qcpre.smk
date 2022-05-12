@@ -53,3 +53,64 @@ rule msetqc:
         "envs/environment.yaml"
     script:
         "scripts/msetqc.R"
+
+# run Density qc for GRset object
+rule densityqcbeta_pre:
+    input:
+        rds = "results/getgrset.rds"
+    output:
+        pdf = "results/densityqcbeta_pre.pdf"
+    params:
+        dir = "data",
+        fill = config["fill"]["densityqc"],
+        type = "beta"
+    log:
+        out = "results/densityqcbeta_pre.out",
+        err = "results/densityqcbeta_pre.err"
+    message:
+        "Run Density QC for GRset object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/densityqc.R"
+
+# run Density qc for GRset object
+rule densityqcm_pre:
+    input:
+        rds = "results/getgrset.rds"
+    output:
+        pdf = "results/densityqcm_pre.pdf"
+    params:
+        dir = "data",
+        fill = config["fill"]["densityqc"],
+        type = "M"
+    log:
+        out = "results/densityqcm_pre.out",
+        err = "results/densityqcm_pre.err"
+    message:
+        "Run Density QC for GRset object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/densityqc.R"
+
+# run Density qc for GRset object
+rule boxplotqc_pre:
+    input:
+        rds = "results/getgrset.rds"
+    output:
+        pdf = "results/boxplotqc_pre.pdf"
+    params:
+        dir = "data",
+        fill = config["fill"]["boxplotqc"]
+    log:
+        out = "results/boxplotqc_pre.out",
+        err = "results/boxplotqc_pre.err"
+    message:
+        "Run Boxplot QC for GRset object"
+    conda:
+        "envs/environment.yaml"
+    script:
+        "scripts/boxplotqc.R"
+
+
