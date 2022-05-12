@@ -1,5 +1,16 @@
 configfile: "config/config.yaml"
 
+# Workflow rules
+include: "rules/preprocessing.smk"
+include: "rules/qcpre.smk"
+# include: "rules/qcpost.smk"
+# include: "rules/normalise.smk"
+# include: "rules/filter.smk"
+# include: "rules/eda.smk"
+# include: "rules/diffmeth.smk"
+# include: "rules/annotate.smk"
+# include: "rules/visualisation.smk"
+
 rule all:
     input:
         "results/import.rds",
@@ -12,466 +23,468 @@ rule all:
         "results/densityqcm_pre.pdf",
         "results/controlstripqc.pdf",
         "results/boxplotqc_pre.pdf",
-        "results/normalise.rds",
-        "results/densityqcbeta_post.pdf",
-        "results/densityqcm_post.pdf",
-        "results/boxplotqc_post.pdf",
-        "results/filter.rds",
-        "results/pca.pdf",
-        "results/densityheatmap.pdf",
-        "results/dmrcatecpg.rds",
-        "results/dmrcatedmr.rds",
-        "results/annotate.rds",
-        "results/rankplot.pdf",
-        "results/tracks.rds"
-
-# import original RGSet object using minfi
-rule import:
-    input:
-        dir = "data"
-    output:
-        rds = "results/import.rds"
-    log:
-        out = "results/import.out",
-        err = "results/import.err"
-    message:
-        "Importing data..."
-    conda:
-        "envs/minfi.yaml"
-    script:
-        "scripts/import.R"
-
-# run qc for methyl seq object
-rule controlstripqc:
-    input:
-        rds = "results/import.rds"
-    output:
-        pdf = "results/controlstripqc.pdf"
-    log:
-        out = "results/controlstripqc.out",
-        err = "results/controlstripqc.err"
-    message:
-        "Run QC for RG Set object (QC baked into minfi)"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/controlstripqc.R"
-
-# get MethylSet object (from RGSet)
-rule getmset:
-    input:
-        rds = "results/import.rds"
-    output:
-        rds = "results/getmset.rds"
-    log:
-        out = "results/getmset.out",
-        err = "results/getmset.err"
-    message:
-        "Converting RGset to MSet"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/getmset.R"
-
-# get Ratio set object, have options for Beta and M values
-rule getrset:
-    input:
-        rds = "results/getmset.rds"
-    output:
-        rds = "results/getrset.rds"
-    params:
-        what = "both",
-        keepCN = True
-    log:
-        out = "results/getrset.out",
-        err = "results/getrset.err"
-    message:
-        "Converting MSet to RSet"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/getrset.R"
-
-# run detection p value qc for RGset objects
-rule detpqc:
-    input:
-        rds = "results/import.rds"
-    output:
-        pdf = "results/detpqc.pdf"
-    params:
-        fill = config["fill"]["detpqc"],
-        dir = "data"
-    log:
-        out = "results/detpqc.out",
-        err = "results/detpqc.err"
-    message:
-        "Plot detection p-value QC for RGSeq object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/detpqc.R"
-
-# run qc for methyl seq object
-rule msetqc:
-    input:
-        rds = "results/getmset.rds"
-    output:
-        pdf = "results/msetqc.pdf"
-    log:
-        out = "results/msetqc.out",
-        err = "results/msetqc.err"
-    message:
-        "Run QC for Methyl Set object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/msetqc.R"
-
-# get Gene Ratio set object GRset
-rule getgrset:
-    input:
-        rds = "results/getmset.rds"
-    output:
-        rds = "results/getgrset.rds"
-    log:
-        out = "results/getgrset.out",
-        err = "results/getgrset.err"
-    message:
-        "Converting MSet to GRSet"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/getgrset.R"
-
-# run Density qc for GRset object
-rule densityqcbeta_pre:
-    input:
-        rds = "results/getgrset.rds"
-    output:
-        pdf = "results/densityqcbeta_pre.pdf"
-    params:
-        dir = "data",
-        fill = config["fill"]["densityqc"],
-        type = "beta"
-    log:
-        out = "results/densityqcbeta_pre.out",
-        err = "results/densityqcbeta_pre.err"
-    message:
-        "Run Density QC for GRset object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/densityqc.R"
-
-# run Density qc for GRset object
-rule densityqcm_pre:
-    input:
-        rds = "results/getgrset.rds"
-    output:
-        pdf = "results/densityqcm_pre.pdf"
-    params:
-        dir = "data",
-        fill = config["fill"]["densityqc"],
-        type = "M"
-    log:
-        out = "results/densityqcm_pre.out",
-        err = "results/densityqcm_pre.err"
-    message:
-        "Run Density QC for GRset object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/densityqc.R"
-
-# run Density qc for GRset object
-rule boxplotqc_pre:
-    input:
-        rds = "results/getgrset.rds"
-    output:
-        pdf = "results/boxplotqc_pre.pdf"
-    params:
-        dir = "data",
-        fill = config["fill"]["boxplotqc"]
-    log:
-        out = "results/boxplotqc_pre.out",
-        err = "results/boxplotqc_pre.err"
-    message:
-        "Run Boxplot QC for GRset object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/boxplotqc.R"
-
-## Normalise - see minfi for normalisation options
-rule normalise:
-    input:
-        rds = "results/import.rds"
-    output:
-        rds = "results/normalise.rds"
-    params:
-        type = "preprocessFunnorm"
-    log:
-        out = "results/normalise.out",
-        err = "results/normalise.err"
-    message:
-        "Normalise RGSet (Will also ratio convert and annotate to GRSet)"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/normalise.R"
-
-# run Density qc for GRset object
-rule densityqcbeta_post:
-    input:
-        rds = "results/normalise.rds"
-    output:
-        pdf = "results/densityqcbeta_post.pdf"
-    params:
-        dir = "data",
-        fill = config["fill"]["densityqc"],
-        type = "beta"
-    log:
-        out = "results/densityqcbeta_post.out",
-        err = "results/densityqcbeta_post.err"
-    message:
-        "Run Density QC for GRset object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/densityqc.R"
-
-# run Density qc for GRset object
-rule densityqcm_post:
-    input:
-        rds = "results/normalise.rds"
-    output:
-        pdf = "results/densityqcm_post.pdf"
-    params:
-        dir = "data",
-        fill = config["fill"]["densityqc"],
-        type = "M"
-    log:
-        out = "results/densityqcm_post.out",
-        err = "results/densityqcm_post.err"
-    message:
-        "Run Density QC for GRset object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/densityqc.R"
-
-# run Density qc for GRset object
-rule boxplotqc_post:
-    input:
-        rds = "results/normalise.rds"
-    output:
-        pdf = "results/boxplotqc_post.pdf"
-    params:
-        dir = "data",
-        fill = config["fill"]["boxplotqc"]
-    log:
-        out = "results/boxplotqc_post.out",
-        err = "results/boxplotqc_post.err"
-    message:
-        "Run Boxplot QC for GRset object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/boxplotqc.R"
+        # "results/normalise.rds",
+        # "results/densityqcbeta_post.pdf",
+        # "results/densityqcm_post.pdf",
+        # "results/boxplotqc_post.pdf",
+        # "results/filter.rds",
+        # "results/pca.pdf",
+        # "results/densityheatmap.pdf",
+        # "results/dmrcatecpg.rds",
+        # "results/dmrcatedmr.rds",
+        # "results/annotate.rds",
+        # "results/rankplot.pdf",
+        # "results/tracks.rds"
 
 
-# Filter non specific probes - see filter.R for more details
-# Makes big difference to downstream analysis
-rule filter:
-    input:
-        rds = "results/normalise.rds"
-    output:
-        rds = "results/filter.rds"
-    params:
-        rgset = "results/import.rds",
-        xprobes = "resources/48639-non-specific-probes-Illumina450k.csv",
-        anno = "hg38",
-        array = "HM450",
-        static = True
-    log:
-        out = "results/filter.out",
-        err = "results/filter.err"
-    message:
-        "Run Filter for normailsed rds"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/filter.R"
 
-# PCA
-rule pca:
-    input:
-        rds = "results/filter.rds"
-    output:
-        pdf = "results/pca.pdf"
-    params:
-        group = "status",
-        fill = config["fill"]["pca"]
-    log:
-        out = "results/pca.out",
-        err = "results/pca.err"
-    message:
-        "Run pca for normalised filtered object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/pca.R"
+# # import original RGSet object using minfi
+# rule import:
+#     input:
+#         dir = "data"
+#     output:
+#         rds = "results/import.rds"
+#     log:
+#         out = "results/import.out",
+#         err = "results/import.err"
+#     message:
+#         "Importing data..."
+#     conda:
+#         "envs/minfi.yaml"
+#     script:
+#         "scripts/import.R"
 
-# Density heatmap
-rule densityheatmap:
-    input:
-        rds = "results/filter.rds"
-    output:
-        pdf = "results/densityheatmap.pdf"
-    params:
-        samples_names = "Sample_Name",
-        group = "status",
-        fill = config["fill"]["densityheatmap"],
-        cluster_columns = True,
-        clustering_distance_columns = "ks"
-    log:
-        out = "results/densityheatmap.out",
-        err = "results/densityheatmap.err"
-    message:
-        "Run densityheatmap for normalised filtered object"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/densityheatmap.R"
+# # run qc for methyl seq object
+# rule controlstripqc:
+#     input:
+#         rds = "results/import.rds"
+#     output:
+#         pdf = "results/controlstripqc.pdf"
+#     log:
+#         out = "results/controlstripqc.out",
+#         err = "results/controlstripqc.err"
+#     message:
+#         "Run QC for RG Set object (QC baked into minfi)"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/controlstripqc.R"
+
+# # get MethylSet object (from RGSet)
+# rule getmset:
+#     input:
+#         rds = "results/import.rds"
+#     output:
+#         rds = "results/getmset.rds"
+#     log:
+#         out = "results/getmset.out",
+#         err = "results/getmset.err"
+#     message:
+#         "Converting RGset to MSet"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/getmset.R"
+
+# # get Ratio set object, have options for Beta and M values
+# rule getrset:
+#     input:
+#         rds = "results/getmset.rds"
+#     output:
+#         rds = "results/getrset.rds"
+#     params:
+#         what = "both",
+#         keepCN = True
+#     log:
+#         out = "results/getrset.out",
+#         err = "results/getrset.err"
+#     message:
+#         "Converting MSet to RSet"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/getrset.R"
+
+# # run detection p value qc for RGset objects
+# rule detpqc:
+#     input:
+#         rds = "results/import.rds"
+#     output:
+#         pdf = "results/detpqc.pdf"
+#     params:
+#         fill = config["fill"]["detpqc"],
+#         dir = "data"
+#     log:
+#         out = "results/detpqc.out",
+#         err = "results/detpqc.err"
+#     message:
+#         "Plot detection p-value QC for RGSeq object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/detpqc.R"
+
+# # run qc for methyl seq object
+# rule msetqc:
+#     input:
+#         rds = "results/getmset.rds"
+#     output:
+#         pdf = "results/msetqc.pdf"
+#     log:
+#         out = "results/msetqc.out",
+#         err = "results/msetqc.err"
+#     message:
+#         "Run QC for Methyl Set object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/msetqc.R"
+
+# # get Gene Ratio set object GRset
+# rule getgrset:
+#     input:
+#         rds = "results/getmset.rds"
+#     output:
+#         rds = "results/getgrset.rds"
+#     log:
+#         out = "results/getgrset.out",
+#         err = "results/getgrset.err"
+#     message:
+#         "Converting MSet to GRSet"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/getgrset.R"
+
+# # run Density qc for GRset object
+# rule densityqcbeta_pre:
+#     input:
+#         rds = "results/getgrset.rds"
+#     output:
+#         pdf = "results/densityqcbeta_pre.pdf"
+#     params:
+#         dir = "data",
+#         fill = config["fill"]["densityqc"],
+#         type = "beta"
+#     log:
+#         out = "results/densityqcbeta_pre.out",
+#         err = "results/densityqcbeta_pre.err"
+#     message:
+#         "Run Density QC for GRset object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/densityqc.R"
+
+# # run Density qc for GRset object
+# rule densityqcm_pre:
+#     input:
+#         rds = "results/getgrset.rds"
+#     output:
+#         pdf = "results/densityqcm_pre.pdf"
+#     params:
+#         dir = "data",
+#         fill = config["fill"]["densityqc"],
+#         type = "M"
+#     log:
+#         out = "results/densityqcm_pre.out",
+#         err = "results/densityqcm_pre.err"
+#     message:
+#         "Run Density QC for GRset object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/densityqc.R"
+
+# # run Density qc for GRset object
+# rule boxplotqc_pre:
+#     input:
+#         rds = "results/getgrset.rds"
+#     output:
+#         pdf = "results/boxplotqc_pre.pdf"
+#     params:
+#         dir = "data",
+#         fill = config["fill"]["boxplotqc"]
+#     log:
+#         out = "results/boxplotqc_pre.out",
+#         err = "results/boxplotqc_pre.err"
+#     message:
+#         "Run Boxplot QC for GRset object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/boxplotqc.R"
+
+# ## Normalise - see minfi for normalisation options
+# rule normalise:
+#     input:
+#         rds = "results/import.rds"
+#     output:
+#         rds = "results/normalise.rds"
+#     params:
+#         type = "preprocessFunnorm"
+#     log:
+#         out = "results/normalise.out",
+#         err = "results/normalise.err"
+#     message:
+#         "Normalise RGSet (Will also ratio convert and annotate to GRSet)"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/normalise.R"
+
+# # run Density qc for GRset object
+# rule densityqcbeta_post:
+#     input:
+#         rds = "results/normalise.rds"
+#     output:
+#         pdf = "results/densityqcbeta_post.pdf"
+#     params:
+#         dir = "data",
+#         fill = config["fill"]["densityqc"],
+#         type = "beta"
+#     log:
+#         out = "results/densityqcbeta_post.out",
+#         err = "results/densityqcbeta_post.err"
+#     message:
+#         "Run Density QC for GRset object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/densityqc.R"
+
+# # run Density qc for GRset object
+# rule densityqcm_post:
+#     input:
+#         rds = "results/normalise.rds"
+#     output:
+#         pdf = "results/densityqcm_post.pdf"
+#     params:
+#         dir = "data",
+#         fill = config["fill"]["densityqc"],
+#         type = "M"
+#     log:
+#         out = "results/densityqcm_post.out",
+#         err = "results/densityqcm_post.err"
+#     message:
+#         "Run Density QC for GRset object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/densityqc.R"
+
+# # run Density qc for GRset object
+# rule boxplotqc_post:
+#     input:
+#         rds = "results/normalise.rds"
+#     output:
+#         pdf = "results/boxplotqc_post.pdf"
+#     params:
+#         dir = "data",
+#         fill = config["fill"]["boxplotqc"]
+#     log:
+#         out = "results/boxplotqc_post.out",
+#         err = "results/boxplotqc_post.err"
+#     message:
+#         "Run Boxplot QC for GRset object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/boxplotqc.R"
 
 
-# DMRCate Cpg
-# fdr: thres for filtering of cpg calling (will be used for including in DMR calling downstream)
-# coef: column index from design matrix of phenotype of interest (comes from samples.tsv "condition" col) 
-rule dmrcatecpg:
-    input:
-        rds = "results/filter.rds"
-    output:
-        rds = "results/dmrcatecpg.rds",
-        csv = "results/dmrcatecpg.csv"
-    params:
-        samples = "config/samples.tsv",
-        arraytype = "450K",
-        analysistype = "differential",
-        coef = 2,
-        fdr = 0.1
-    log:
-        out = "results/dmrcatecpg.out",
-        err = "results/dmrcatecpg.err"
-    message:
-        "Run dmrcate differential expression per cpg"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/dmrcatecpg.R"
+# # Filter non specific probes - see filter.R for more details
+# # Makes big difference to downstream analysis
+# rule filter:
+#     input:
+#         rds = "results/normalise.rds"
+#     output:
+#         rds = "results/filter.rds"
+#     params:
+#         rgset = "results/import.rds",
+#         xprobes = "resources/48639-non-specific-probes-Illumina450k.csv",
+#         anno = "hg38",
+#         array = "HM450",
+#         static = True
+#     log:
+#         out = "results/filter.out",
+#         err = "results/filter.err"
+#     message:
+#         "Run Filter for normailsed rds"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/filter.R"
+
+# # PCA
+# rule pca:
+#     input:
+#         rds = "results/filter.rds"
+#     output:
+#         pdf = "results/pca.pdf"
+#     params:
+#         group = "status",
+#         fill = config["fill"]["pca"]
+#     log:
+#         out = "results/pca.out",
+#         err = "results/pca.err"
+#     message:
+#         "Run pca for normalised filtered object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/pca.R"
+
+# # Density heatmap
+# rule densityheatmap:
+#     input:
+#         rds = "results/filter.rds"
+#     output:
+#         pdf = "results/densityheatmap.pdf"
+#     params:
+#         samples_names = "Sample_Name",
+#         group = "status",
+#         fill = config["fill"]["densityheatmap"],
+#         cluster_columns = True,
+#         clustering_distance_columns = "ks"
+#     log:
+#         out = "results/densityheatmap.out",
+#         err = "results/densityheatmap.err"
+#     message:
+#         "Run densityheatmap for normalised filtered object"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/densityheatmap.R"
+
+
+# # DMRCate Cpg
+# # fdr: thres for filtering of cpg calling (will be used for including in DMR calling downstream)
+# # coef: column index from design matrix of phenotype of interest (comes from samples.tsv "condition" col) 
+# rule dmrcatecpg:
+#     input:
+#         rds = "results/filter.rds"
+#     output:
+#         rds = "results/dmrcatecpg.rds",
+#         csv = "results/dmrcatecpg.csv"
+#     params:
+#         samples = "config/samples.tsv",
+#         arraytype = "450K",
+#         analysistype = "differential",
+#         coef = 2,
+#         fdr = 0.1
+#     log:
+#         out = "results/dmrcatecpg.out",
+#         err = "results/dmrcatecpg.err"
+#     message:
+#         "Run dmrcate differential expression per cpg"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/dmrcatecpg.R"
     
 
 
-# DMRCate DMR
-# Liftover currently supporting hg19 to hg38
-# Can rank DMRs by a number of options 
-# - see https://bioconductor.org/packages/release/bioc/vignettes/DMRcate/inst/doc/DMRcate.pdf
-# Others incluce: Stouffer HMFDR Fisher
-rule dmrcatedmr:
-    input:
-        rds = "results/dmrcatecpg.rds"
-    output:
-        rds = "results/dmrcatedmr.rds",
-        csv = "results/dmrcatedmr.csv"
-    params:
-        liftover = True,
-        chainfile = "resources/hg19ToHg38.over.chain",
-        fdr = "min_smoothed_fdr"
-    log:
-        out = "results/dmrcatedmr.out",
-        err = "results/dmrcatedmr.err"
-    message:
-        "Run dmrcate - merge adjacent cpgs into dmrs"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/dmrcatedmr.R"
+# # DMRCate DMR
+# # Liftover currently supporting hg19 to hg38
+# # Can rank DMRs by a number of options 
+# # - see https://bioconductor.org/packages/release/bioc/vignettes/DMRcate/inst/doc/DMRcate.pdf
+# # Others incluce: Stouffer HMFDR Fisher
+# rule dmrcatedmr:
+#     input:
+#         rds = "results/dmrcatecpg.rds"
+#     output:
+#         rds = "results/dmrcatedmr.rds",
+#         csv = "results/dmrcatedmr.csv"
+#     params:
+#         liftover = True,
+#         chainfile = "resources/hg19ToHg38.over.chain",
+#         fdr = "min_smoothed_fdr"
+#     log:
+#         out = "results/dmrcatedmr.out",
+#         err = "results/dmrcatedmr.err"
+#     message:
+#         "Run dmrcate - merge adjacent cpgs into dmrs"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/dmrcatedmr.R"
 
-# Annotate DMRs with closest gene
-rule annotate:
-    input:
-        rds = "results/dmrcatedmr.rds"
-    output:
-        rds = "results/annotate.rds",
-        csv = "results/annotate.csv",
-        bed = "results/annotate.bed"
-    params:
-        outputLoc = "nearestLocation",
-        featureLocForDistance = "TSS",
-        bindingRegion = [-2000, 2000]
-    log:
-        out = "results/annotate.out",
-        err = "results/annotate.err"
-    message:
-        "Run annotation of dmrs"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/annotate.R"
+# # Annotate DMRs with closest gene
+# rule annotate:
+#     input:
+#         rds = "results/dmrcatedmr.rds"
+#     output:
+#         rds = "results/annotate.rds",
+#         csv = "results/annotate.csv",
+#         bed = "results/annotate.bed"
+#     params:
+#         outputLoc = "nearestLocation",
+#         featureLocForDistance = "TSS",
+#         bindingRegion = [-2000, 2000]
+#     log:
+#         out = "results/annotate.out",
+#         err = "results/annotate.err"
+#     message:
+#         "Run annotation of dmrs"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/annotate.R"
 
-# Run Rank plot for visualisation of DMR output
-# Can be ranked by meandiff or maxdiff - in the past was meanbetafc (which is essentially meandiff)
-# some of DMRcates outputs have been changed with recent update
-# At current genes of interest can be supplied as a list below - but could be implemented as a json or such format (when as None - take top genes specified as number shown)
-rule rankplot:
-    input:
-        rds = "results/annotate.rds"
-    output:
-        pdf = "results/rankplot.pdf",
-        tsv = "results/rankplot.tsv"
-    params:
-        width = 3,
-        height = 5,
-        textsize = 2.5,
-        pad = 1,
-        pointsize = 1,
-        highlight = 60,
-        title = "Rankplot DMRs",
-        yaxis = "meandiff",
-        number_show = 10,
-        num_score_thres = 0.4,
-        genes_of_interest = None, # list of genes of interest for plotting (otherwise will auto label)
-        symbol = "symbol" # column name of annotation for nearest gene to feature for plotting
-    log:
-        out = "results/rankplot.out",
-        err = "results/rankplot.err"
-    message:
-        "Run rankplot for dmrcate dmr output"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/rankplot.R"
+# # Run Rank plot for visualisation of DMR output
+# # Can be ranked by meandiff or maxdiff - in the past was meanbetafc (which is essentially meandiff)
+# # some of DMRcates outputs have been changed with recent update
+# # At current genes of interest can be supplied as a list below - but could be implemented as a json or such format (when as None - take top genes specified as number shown)
+# rule rankplot:
+#     input:
+#         rds = "results/annotate.rds"
+#     output:
+#         pdf = "results/rankplot.pdf",
+#         tsv = "results/rankplot.tsv"
+#     params:
+#         width = 3,
+#         height = 5,
+#         textsize = 2.5,
+#         pad = 1,
+#         pointsize = 1,
+#         highlight = 60,
+#         title = "Rankplot DMRs",
+#         yaxis = "meandiff",
+#         number_show = 10,
+#         num_score_thres = 0.4,
+#         genes_of_interest = None, # list of genes of interest for plotting (otherwise will auto label)
+#         symbol = "symbol" # column name of annotation for nearest gene to feature for plotting
+#     log:
+#         out = "results/rankplot.out",
+#         err = "results/rankplot.err"
+#     message:
+#         "Run rankplot for dmrcate dmr output"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/rankplot.R"
 
-# Saves out filtered CpG Beta Signal as BigWig tracks for visualisation
-# Also saves rds obj tracks.rds 
-# If combine is not None then will combine replicates as specified (can also be median)
-rule tracks:
-    input:
-        rds = "results/filter.rds"
-    output:
-        rds = "results/tracks.rds" # saves as a list of GRanges objects formated as BW before being exported via rtracklayer
-    params:
-        anno = "hg38",
-        array = "HM450",
-        combine = None,
-        by = "sample", # use what meta data column to combine by
-        bwLocation = "results/"
-    log:
-        out = "results/tracks.out",
-        err = "results/tracks.err"
-    message:
-        "Get BigWig files for CpG Tracks"
-    conda:
-        "envs/environment.yaml"
-    script:
-        "scripts/tracks.R"
+# # Saves out filtered CpG Beta Signal as BigWig tracks for visualisation
+# # Also saves rds obj tracks.rds 
+# # If combine is not None then will combine replicates as specified (can also be median)
+# rule tracks:
+#     input:
+#         rds = "results/filter.rds"
+#     output:
+#         rds = "results/tracks.rds" # saves as a list of GRanges objects formated as BW before being exported via rtracklayer
+#     params:
+#         anno = "hg38",
+#         array = "HM450",
+#         combine = None,
+#         by = "sample", # use what meta data column to combine by
+#         bwLocation = "results/"
+#     log:
+#         out = "results/tracks.out",
+#         err = "results/tracks.err"
+#     message:
+#         "Get BigWig files for CpG Tracks"
+#     conda:
+#         "envs/environment.yaml"
+#     script:
+#         "scripts/tracks.R"
