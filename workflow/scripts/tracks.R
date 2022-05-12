@@ -62,6 +62,7 @@ getTrackObj <- function(filter, anno = "hg38", array = "HM450", combine = "mean"
   return(tracksList)
 }
 
+# Combine samples together based on colData col name and label into combined tracks
 
 combineBeta <- function(label, tracks, colData, by, combine = "mean", samplename = "Sample_Name"){
   
@@ -93,6 +94,11 @@ combineBeta <- function(label, tracks, colData, by, combine = "mean", samplename
   
 }
 
+# Parse GRranges object to ensure ready for output
+# Ensures Beta col is labelled score
+# Removes indeterminate chrs (*)
+# Removes Cpg sites which overlap boundaries - this should not be the case with any CpG GRanges obj but rtracklayer also does not want them to share boundaries
+
 filterTrackOverlaps <- function(tracks){
     
     library(TxDb.Hsapiens.UCSC.hg38.knownGene)
@@ -107,7 +113,7 @@ filterTrackOverlaps <- function(tracks){
 
     seqinfo(tracks) <- seqinfo(txdb)[seqnames(seqinfo(tracks))[seqnames(seqinfo(tracks)) != "*"]]
   
-    # take tracks which share boundaries are remove them
+    # take tracks which share boundaries and remove them
     tracks <- tracks[!tail(start(tracks), -1) <= head(end(tracks), -1)]
   
     # resort
@@ -116,6 +122,8 @@ filterTrackOverlaps <- function(tracks){
     return(tracks)
 
 }
+
+# Save out track via rtracklayer
 
 saveTrack <- function(sample, tracks, fileExt = ".BigWig", location = "./"){
   
