@@ -39,6 +39,7 @@ def get_final_output():
         "results/pca.pdf",
         "results/densityheatmap.pdf",
         "results/tracks.rds",
+        "resources/48639-non-specific-probes-Illumina450k.csv"
     ]
 
     # TODO add contrast to config BW-18
@@ -64,6 +65,18 @@ def get_final_output():
         output.append(f"results/{contrast}.rankplot.pdf")
 
         output.append(f"results/{contrast}.rankplot.tsv")
+
+    # Resource outputs required for rules
+
+    organism = config["organism"]
+
+    array = config["array"]
+
+    output.append(f"resources/{array}.{organism}.manifest.rds")
+
+    chainfile = config["chain"]
+
+    output.append(f"resources/{chainfile}")
 
     return output
 

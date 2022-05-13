@@ -7,14 +7,15 @@
 # Makes big difference to downstream analysis
 rule filter:
     input:
-        rds = "results/normalise.rds"
+        rds = "results/normalise.rds",
+        xprobes = "resources/48639-non-specific-probes-Illumina450k.csv"
     output:
         rds = "results/filter.rds"
     params:
         rgset = "results/import.rds",
-        xprobes = "resources/48639-non-specific-probes-Illumina450k.csv",
-        anno = "hg38",
-        array = "HM450",
+        # xprobes = "resources/48639-non-specific-probes-Illumina450k.csv",
+        anno = config["organism"], # "hg38",
+        array = config["array"], # "HM450",
         static = True
     log:
         out = "results/filter.out",

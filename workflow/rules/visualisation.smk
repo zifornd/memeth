@@ -45,8 +45,8 @@ rule tracks:
     output:
         rds = "results/tracks.rds" # saves as a list of GRanges objects formated as BW before being exported via rtracklayer
     params:
-        anno = "hg38",
-        array = "HM450",
+        anno = config["organism"], # "hg38",
+        array = config["array"], # "HM450",
         combine = None,
         by = "sample", # use what meta data column to combine by
         bwLocation = "results/"

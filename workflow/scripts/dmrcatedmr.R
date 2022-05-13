@@ -48,7 +48,8 @@ main <- function(input, output, params, log, config) {
 
   seqlevelsStyle(results.ranges) <- "UCSC"
 
-  chainfile <- params$chainfile
+  # chainfile <- params$chainfile
+  chainfile <- input$chainfile
 
   if(params$liftover){
 

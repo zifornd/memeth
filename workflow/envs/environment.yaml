@@ -10,16 +10,20 @@ dependencies:
   - libopenblas=0.3.3
   - bioconductor-illuminahumanmethylation450kmanifest
   - bioconductor-illuminahumanmethylation450kanno.ilmn12.hg19
+  - bioconductor-illuminahumanmethylationepicmanifest
+  - bioconductor-illuminahumanmethylationepicanno.ilm10b4.hg19
   - bioconductor-complexheatmap
   - bioconductor-dmrcate
   - bioconductor-dmrcatedata
   - bioconductor-experimenthub
   - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-txdb.hsapiens.ucsc.hg19.knowngene
   - bioconductor-genomicranges
   - bioconductor-chippeakanno
   - bioconductor-org.hs.eg.db
   - bioconductor-rtracklayer
   - bioconductor-limma
+
 
 # bioconductor-sesamedata - NOTE does not seem to work for some reason - instead am downloading rds as static files and have kept in resources folder
 # minfi

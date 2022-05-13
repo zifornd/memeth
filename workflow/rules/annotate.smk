@@ -14,7 +14,8 @@ rule annotate:
     params:
         outputLoc = "nearestLocation",
         featureLocForDistance = "TSS",
-        bindingRegion = [-2000, 2000]
+        bindingRegion = [-2000, 2000],
+        organism = config["organism"],
     log:
         out = "results/{contrast}.annotate.out",
         err = "results/{contrast}.annotate.err"

@@ -14,7 +14,7 @@ rule dmrcatecpg:
         csv = "results/{contrast}.dmrcatecpg.csv",
     params:
         samples = "config/samples.tsv",
-        arraytype = "450K",
+        arraytype = config["array"], #"450K" - DMRCate expects "450K" as input but other rules expect HM450
         analysistype = "differential",
         contrast = get_contrast,
         fdr = 0.1
@@ -35,13 +35,14 @@ rule dmrcatecpg:
 # Others incluce: Stouffer HMFDR Fisher
 rule dmrcatedmr:
     input:
-        rds = "results/{contrast}.dmrcatecpg.rds"
+        rds = "results/{contrast}.dmrcatecpg.rds",
+        chainfile = "resources/" + config["chain"]  # "resources/hg19ToHg38.over.chain"
     output:
         rds = "results/{contrast}.dmrcatedmr.rds",
         csv = "results/{contrast}.dmrcatedmr.csv"
     params:
         liftover = True,
-        chainfile = "resources/hg19ToHg38.over.chain",
+        # chainfile = "resources/hg19ToHg38.over.chain",
         fdr = "min_smoothed_fdr"
     log:
         out = "results/{contrast}.dmrcatedmr.out",

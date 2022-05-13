@@ -147,6 +147,13 @@ main <- function(input, output, params, log, config) {
 
   arraytype = params$arraytype
 
+  # cpg.annotate expects array string as 450K but config specifies as HM450
+  if(arraytype == "HM450"){
+
+    arraytype = "450K"
+
+  }
+
   analysis.type = params$analysistype
 
   # Changing to limma style contrast matrix makes easier to specify comparison explicitly in config

@@ -1,3 +1,4 @@
+# Configuration file
 configfile: "config/config.yaml"
 
 # Global constraints
@@ -6,6 +7,7 @@ wildcard_constraints:
 
 # Workflow rules
 include: "rules/common.smk"
+include: "rules/resources.smk"
 include: "rules/preprocessing.smk"
 include: "rules/qcpre.smk"
 include: "rules/normalise.smk"
@@ -16,6 +18,7 @@ include: "rules/diffmeth.smk"
 include: "rules/annotate.smk"
 include: "rules/visualisation.smk"
 
+# Target Rule
 rule all:
     input:
         get_final_output()

@@ -9,14 +9,11 @@ properties:
   samples:
     type: string
   
-  # organism:
-  #   type: string
+  organism:
+    type: string
   
-  # platform:
-  #   type: string
-  
-  # annotation:
-  #   type: string
+  array:
+    type: string
   
   contrasts:
     type: object
@@ -26,8 +23,7 @@ properties:
 
 required:
   - samples
-  # - organism
-  # - platform
-  # - annotation
+  - organism
+  - array
   - contrasts
   - fill

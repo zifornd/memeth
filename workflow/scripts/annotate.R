@@ -1,16 +1,29 @@
 ###### Annotate DMRs 
 
 addAnno <- function(dmrs, outputLoc = "nearestLocation", featureLocForDistance="TSS", 
-                    bindingRegion=c(-2000, 2000)){
+                    bindingRegion=c(-2000, 2000), organism = "hg38"){
 
-    library(TxDb.Hsapiens.UCSC.hg38.knownGene)
     library(GenomicRanges)
     library(ChIPpeakAnno)
     library(org.Hs.eg.db)
     
     dmrs = GRanges(dmrs)
-    
-    annoData <- toGRanges(TxDb.Hsapiens.UCSC.hg38.knownGene)
+
+    if(organism == "hg38"){   
+
+        library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+
+        annoData <- toGRanges(TxDb.Hsapiens.UCSC.hg38.knownGene)
+
+    } 
+
+    if(organism == "hg19"){
+
+        library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+
+        annoData <- toGRanges(TxDb.Hsapiens.UCSC.hg19.knownGene)
+
+    }
     
     seqlevelsStyle(dmrs) <- seqlevelsStyle(annoData)
     
@@ -52,12 +65,13 @@ main <- function(input, output, params, log) {
     outputLoc <- params$output # "nearestLocation"
     featureLocForDistance <- params$featureLocForDistance # "TSS"
     bindingRegion <- params$bindingRegion  # c(-2000, 2000)
+    organism <- params$organism
 
     # output 
     save <- output$csv
   
     # run annotation
-    dmrs = addAnno(dmrs, outputLoc, featureLocForDistance, bindingRegion)
+    dmrs = addAnno(dmrs, outputLoc, featureLocForDistance, bindingRegion, organism)
     
     # save output
 

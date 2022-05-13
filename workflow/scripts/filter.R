@@ -111,7 +111,8 @@ main <- function(input, output, params, log) {
   RGset <- readRDS(params$rgset)
   
   # "48639-non-specific-probes-Illumina450k.csv"
-  xprobes <- read.csv(file=params$xprobes, stringsAsFactors=FALSE)
+  # xprobes <- read.csv(file=params$xprobes, stringsAsFactors=FALSE)
+  xprobes <- read.csv(file=input$xprobes, stringsAsFactors=FALSE)
   
   GRsetFilt <- filterByDetP(GRset, RGset)
   GRsetFilt <- filterBySexChrom(GRset)

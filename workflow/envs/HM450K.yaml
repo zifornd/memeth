@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconductor-minfi
+  - libopenblas=0.3.3
+  - bioconductor-illuminahumanmethylation450kmanifest
+  - bioconductor-illuminahumanmethylation450kanno.ilmn12.hg19
