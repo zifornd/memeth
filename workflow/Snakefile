@@ -1,31 +1,11 @@
 configfile: "config/config.yaml"
 
-rule all:
-    input:
-        "results/import.rds",
-        "results/getmset.rds",
-        "results/getrset.rds",
-        "results/detpqc.pdf",
-        "results/msetqc.pdf",
-        "results/getgrset.rds",
-        "results/densityqcbeta_pre.pdf",
-        "results/densityqcm_pre.pdf",
-        "results/controlstripqc.pdf",
-        "results/boxplotqc_pre.pdf",
-        "results/normalise.rds",
-        "results/densityqcbeta_post.pdf",
-        "results/densityqcm_post.pdf",
-        "results/boxplotqc_post.pdf",
-        "results/filter.rds",
-        "results/pca.pdf",
-        "results/densityheatmap.pdf",
-        "results/dmrcatecpg.rds",
-        "results/dmrcatedmr.rds",
-        "results/annotate.rds",
-        "results/rankplot.pdf",
-        "results/tracks.rds"
+# Global constraints
+wildcard_constraints:
+    contrast = "|".join(config["contrasts"])
 
 # Workflow rules
+include: "rules/common.smk"
 include: "rules/preprocessing.smk"
 include: "rules/qcpre.smk"
 include: "rules/normalise.smk"
@@ -35,3 +15,7 @@ include: "rules/eda.smk"
 include: "rules/diffmeth.smk"
 include: "rules/annotate.smk"
 include: "rules/visualisation.smk"
+
+rule all:
+    input:
+        get_final_output()

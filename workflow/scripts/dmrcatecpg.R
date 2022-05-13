@@ -9,8 +9,6 @@ modelMatrix <- function(data) {
   
   # Get phenotype data
   
-  # data <- pData(object)
-
   names <- colnames(data)
   
   # Set condition factor
@@ -65,8 +63,7 @@ modelMatrix <- function(data) {
   
   if (is.condition & !is.batch & !is.block) {
     
-    # design <- model.matrix(~ 0 + condition)
-    design <- model.matrix(~ condition)
+    design <- model.matrix(~ 0 + condition)
     
   }
   
@@ -94,8 +91,8 @@ modelMatrix <- function(data) {
   
   colnames(design)[which.condition] <- levels(condition)
   
-  # Required for DMRcate
-  colnames(design)[1] <- "(Intercept)"
+  # Required for DMRcate if using numeric coef
+  # colnames(design)[1] <- "(Intercept)"
 
   # Return design matrix
   
@@ -131,6 +128,7 @@ main <- function(input, output, params, log, config) {
   library(DMRcate)
   library(rtracklayer)
   library(minfi)
+  library(limma)
   
   GRset <- readRDS(input$rds)
 
@@ -151,15 +149,26 @@ main <- function(input, output, params, log, config) {
 
   analysis.type = params$analysistype
 
-  coef = params$coef
-  
+  # Changing to limma style contrast matrix makes easier to specify comparison explicitly in config
+  # See BW-23
+  con <- params$contrast
+
+  # limma style contrast matrix
+  cont.matrix <- makeContrasts(contrasts=con, levels=mod)
+
+  # must be a column name in cont.matrix
+  # Should correspond to contrast given as param con
+  coef <- colnames(cont.matrix)[1]
+  stopifnot(coef == con)
+
   fdr = params$fdr
 
-  # contrasts = TRUE when we supply a limma style matrix (FALSE if design matrix)
-  # design matrix must have intercept however
-  cpg.annotation <- cpg.annotate("array", GRsetRatio, arraytype = arraytype,
+  # See BW-23 Added cont.matrix = cont.matrix
+  # Allowed us to remove intercept from desing matrix
+  # Otherwise design matrix must have intercept and coef must be numeric
+  cpg.annotation <- cpg.annotate("array", GRsetRatio, arraytype = arraytype, cont.matrix = cont.matrix,
                                analysis.type = analysis.type, design = mod, coef = coef,
-                               contrasts = FALSE, fdr = fdr)
+                               contrasts = TRUE, fdr = fdr)
 
   
   write.csv(as.data.frame(cpg.annotation@ranges), file = output$csv, quote = F)

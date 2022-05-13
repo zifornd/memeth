@@ -1,9 +1,14 @@
+# path to sample sheet
 samples: "config/samples.tsv"
 
+# colours for plots
 fill:
-
   detpqc: "Red,Blue"
   densityqc: "Red,Blue"
   boxplotqc: "Red,Blue"
   pca: "Red,Blue"
 
+# contrasts for the limma results method
+contrasts:
+  cancer_vs_normal:
+    - cancer - normal

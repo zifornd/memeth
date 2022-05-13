@@ -9,10 +9,10 @@
 # At current genes of interest can be supplied as a list below - but could be implemented as a json or such format (when as None - take top genes specified as number shown)
 rule rankplot:
     input:
-        rds = "results/annotate.rds"
+        rds = "results/{contrast}.annotate.rds"
     output:
-        pdf = "results/rankplot.pdf",
-        tsv = "results/rankplot.tsv"
+        pdf = "results/{contrast}.rankplot.pdf",
+        tsv = "results/{contrast}.rankplot.tsv"
     params:
         width = 3,
         height = 5,
@@ -27,8 +27,8 @@ rule rankplot:
         genes_of_interest = None, # list of genes of interest for plotting (otherwise will auto label)
         symbol = "symbol" # column name of annotation for nearest gene to feature for plotting
     log:
-        out = "results/rankplot.out",
-        err = "results/rankplot.err"
+        out = "results/{contrast}.rankplot.out",
+        err = "results/{contrast}.rankplot.err"
     message:
         "Run rankplot for dmrcate dmr output"
     conda:

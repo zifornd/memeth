@@ -10,17 +10,17 @@ rule dmrcatecpg:
     input:
         rds = "results/filter.rds"
     output:
-        rds = "results/dmrcatecpg.rds",
-        csv = "results/dmrcatecpg.csv"
+        rds = "results/{contrast}.dmrcatecpg.rds",
+        csv = "results/{contrast}.dmrcatecpg.csv",
     params:
         samples = "config/samples.tsv",
         arraytype = "450K",
         analysistype = "differential",
-        coef = 2,
+        contrast = get_contrast,
         fdr = 0.1
     log:
-        out = "results/dmrcatecpg.out",
-        err = "results/dmrcatecpg.err"
+        out = "results/{contrast}.dmrcatecpg.out",
+        err = "results/{contrast}.dmrcatecpg.err"
     message:
         "Run dmrcate differential expression per cpg"
     conda:
@@ -35,17 +35,17 @@ rule dmrcatecpg:
 # Others incluce: Stouffer HMFDR Fisher
 rule dmrcatedmr:
     input:
-        rds = "results/dmrcatecpg.rds"
+        rds = "results/{contrast}.dmrcatecpg.rds"
     output:
-        rds = "results/dmrcatedmr.rds",
-        csv = "results/dmrcatedmr.csv"
+        rds = "results/{contrast}.dmrcatedmr.rds",
+        csv = "results/{contrast}.dmrcatedmr.csv"
     params:
         liftover = True,
         chainfile = "resources/hg19ToHg38.over.chain",
         fdr = "min_smoothed_fdr"
     log:
-        out = "results/dmrcatedmr.out",
-        err = "results/dmrcatedmr.err"
+        out = "results/{contrast}.dmrcatedmr.out",
+        err = "results/{contrast}.dmrcatedmr.err"
     message:
         "Run dmrcate - merge adjacent cpgs into dmrs"
     conda:

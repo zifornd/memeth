@@ -6,18 +6,18 @@
 # Annotate DMRs with closest gene
 rule annotate:
     input:
-        rds = "results/dmrcatedmr.rds"
+        rds = "results/{contrast}.dmrcatedmr.rds"
     output:
-        rds = "results/annotate.rds",
-        csv = "results/annotate.csv",
-        bed = "results/annotate.bed"
+        rds = "results/{contrast}.annotate.rds",
+        csv = "results/{contrast}.annotate.csv",
+        bed = "results/{contrast}.annotate.bed"
     params:
         outputLoc = "nearestLocation",
         featureLocForDistance = "TSS",
         bindingRegion = [-2000, 2000]
     log:
-        out = "results/annotate.out",
-        err = "results/annotate.err"
+        out = "results/{contrast}.annotate.out",
+        err = "results/{contrast}.annotate.err"
     message:
         "Run annotation of dmrs"
     conda:
