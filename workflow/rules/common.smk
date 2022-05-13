@@ -10,14 +10,13 @@ from snakemake.utils import validate
 ### Validating inputs require schema implementation
 
 # TODO add schemas BW-26
-# validate(config, schema="../schemas/config.schema.yaml")
+validate(config, schema="../schemas/config.schema.yaml")
 
-# Dont need this as not validating yet
-# samples = pd.read_table(config["samples"]).set_index("sample", drop=False).sort_index()
+# default ‘\t’ not picking up samples.tsv header
+samples = pd.read_csv(config["samples"], sep = "\s+", engine='python').set_index("sample", drop=False).sort_index()
 
 # TODO add schemas BW-26
-# validate(samples, schema="../schemas/samples.schema.yaml")
-
+validate(samples, schema="../schemas/samples.schema.yaml")
 
 def get_final_output():
 
@@ -41,7 +40,6 @@ def get_final_output():
         "results/densityheatmap.pdf",
         "results/tracks.rds",
     ]
-
 
     # TODO add contrast to config BW-18
 
