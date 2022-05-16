@@ -22,15 +22,15 @@ getData <- function(GRset, type){
 }
 
 
-plotDensity <- function(data, phenodata, output, fill){
+plotDensity <- function(data, phenodata, output, fill, group = "Sample_Group"){
   
   
   ## Density plot
   pdf(output)
   
-  densityPlot(data, sampGroups = phenodata$Sample_Group, legend = F, pal = fill)
+  densityPlot(data, sampGroups = phenodata[[group]], legend = F, pal = fill)
   
-  legend("top", legend = levels(factor(phenodata$Sample_Group)),
+  legend("top", legend = levels(factor(phenodata[[group]])),
          text.col=fill)
   
   dev.off()
@@ -60,13 +60,12 @@ main <- function(input, output, params, log) {
   
   data <- getData(GRset, params$type)
 
-  #phenodata <- read.metharray.sheet(params$dir)
-  
   phenodata <- pData(GRset)
-
-  fill <- strsplit(params$fill, ",")[[1]]
   
-  plotDensity(data, phenodata, output$pdf, fill)
+  fill <- unlist(params$fill)
+
+  # TODO See BW-31
+  plotDensity(data, phenodata, output$pdf, fill, group = "status")
   
 
 }

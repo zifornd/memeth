@@ -9,7 +9,7 @@ contrasts:
 # organism genome build (only human at current - hg38, hg19)
 organism: hg38
 
-# methylation array (HM450K, EPIC)
+# methylation array (HM450, EPIC)
 array: HM450
 
 # chainfile (if no liftover needed - leave as default below)
@@ -17,8 +17,21 @@ chain: hg19ToHg38.over.chain
 
 # colours for plots
 fill:
-  detpqc: "Red,Blue"
-  densityqc: "Red,Blue"
-  boxplotqc: "Red,Blue"
-  pca: "Red,Blue"
-  densityheatmap: "Blue,Blue,Red,Red,Blue,Red"
+  all: 
+    cancer: "Red"
+    normal: "Blue"
+  detpqc: 
+    cancer: "Red"
+    normal: "Blue"
+  densityqc: 
+    cancer: "Red"
+    normal: "Blue"
+  boxplotqc:
+    cancer: "Red"
+    normal: "Blue"
+  pca: 
+    cancer: "Red"
+    normal: "Blue"
+  densityheatmap: 
+    cancer: "Red"
+    normal: "Blue"

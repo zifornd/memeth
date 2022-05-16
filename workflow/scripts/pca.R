@@ -11,7 +11,6 @@ plotPCA <- function(x, ...) {
 
 plotPCA.GenomicRatioSet <- function(x, col, fill) {
   
-  print(fill)
   mat <- getBeta(x)
   
   var <- matrixStats::rowVars(mat)
@@ -55,7 +54,8 @@ main <- function(input, output, params, log) {
   
   x <- readRDS(input$rds)
   
-  fill = strsplit(params$fill, ",")[[1]]
+  # convert fill to named vector as preserves names
+  fill = unlist(params$fill)
 
   p <- plotPCA(x, col = params$group, fill = fill)
   

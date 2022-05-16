@@ -4,12 +4,12 @@
 # License: MIT
 
 
-plotBoxplots <- function(beta, phenodata, fill){
+plotBoxplots <- function(beta, phenodata, fill, group = "Sample_Group"){
   
   t_beta = t(beta)
   t_beta = as.data.frame(t_beta, drop=FALSE)
   t_beta$Sample_name = phenodata$Sample_Name
-  t_beta$Group = as.character(phenodata$Sample_Group)
+  t_beta$Group = as.character(phenodata[[group]])
   melt_beta = melt(t_beta)
 
   colnames(melt_beta) = c("Sample","Group", "CpG", "B.Val" )
@@ -48,9 +48,10 @@ main <- function(input, output, params, log) {
   
   phenodata <- pData(GRset)
   
-  fill <- strsplit(params$fill, ",")[[1]]
-  
-  bp <- plotBoxplots(beta, phenodata, fill)
+  fill <- unlist(params$fill)
+
+  # TODO See BW-31
+  bp <- plotBoxplots(beta, phenodata, fill, group = "status")
   
   ggsave(output$pdf, plot = bp)
   

@@ -45,8 +45,16 @@ main <- function(input, output, params, log) {
 
   col <- params$group
   
-  fill <- strsplit(params$fill, ",")[[1]]
-  
+  fillList <- params$fill
+
+  # Check if names supplied are in GRSet metadata
+  stopifnot(names(fillList) %in% pData(GRset)[, col])
+
+  fill <- sapply(pData(GRset)[, col], function(x, fillList){as.character(fillList[x])}, fillList = fillList)
+
+  # ensure character vector in correct order for plotting
+  stopifnot(names(fill) == pData(GRset)[, col])
+
   cluster_columns <- params$cluster_columns
   
   clustering_distance_columns <- params$clustering_distance_columns

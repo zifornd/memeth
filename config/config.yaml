@@ -17,8 +17,21 @@ chain: hg19ToHg38.over.chain
 
 # colours for plots
 fill:
-  detpqc: "Red,Blue"
-  densityqc: "Red,Blue"
-  boxplotqc: "Red,Blue"
-  pca: "Red,Blue"
-  densityheatmap: "Blue,Blue,Red,Red,Blue,Red"
+  all: 
+    cancer: "Red"
+    normal: "Blue"
+  detpqc: 
+    cancer: "Red"
+    normal: "Blue"
+  densityqc: 
+    cancer: "Red"
+    normal: "Blue"
+  boxplotqc:
+    cancer: "Red"
+    normal: "Blue"
+  pca: 
+    cancer: "Red"
+    normal: "Blue"
+  densityheatmap: 
+    cancer: "Red"
+    normal: "Blue"
