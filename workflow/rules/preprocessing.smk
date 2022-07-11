@@ -6,7 +6,8 @@
 # import original RGSet object using minfi
 rule import:
     input:
-        dir = "data"
+        dir = "data",
+        samples = "config/samples.tsv"
     output:
         rds = "results/import.rds"
     log:

@@ -52,7 +52,7 @@ main <- function(input, output, params, log) {
   fill <- unlist(params$fill)
 
   # TODO See BW-31
-  qcPval(detP, targets,output$pdf, fill, group = "status")
+  qcPval(detP, targets, output$pdf, fill, group = "status")
   
 
 }

@@ -20,7 +20,17 @@ main <- function(input, output, params, log) {
   library(minfi)
 
   targets <- read.metharray.sheet(input$dir)
+
+  sample_table <- read.table(input$samples, header = T)
+
+  # match targets with sample table
+  targets <- targets[match(sample_table[,"sample"], targets[,"Sample_Name"]),]
   
+  stopifnot(targets[,"Sample_Name"] == sample_table[,"sample"])
+
+  # add sample table to targets
+  targets <- cbind.data.frame(targets, sample_table)
+
   RGset <- read.metharray.exp(targets = targets)
   
   saveRDS(RGset, file = output$rds)
