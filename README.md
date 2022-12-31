@@ -1,4 +1,4 @@
-# arrays <img align="right" width="200" src="images/roundel.png">
+# memeth <img align="right" width="200" src="images/roundel.png">
 
 A Snakemake workflow to analyse Illumina methylation arrays
 
