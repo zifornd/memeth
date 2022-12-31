@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+
+  Formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Formatting
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_SNAKEMAKE_SNAKEFMT: true
+
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Linting
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.tests/integration'
+          snakefile: 'workflow/Snakefile'
+          args: '--lint'
+  
+  Testing:
+    runs-on: ubuntu-latest
+    needs: 
+      - Formatting
+      - Linting
+    steps:
+      - uses: actions/checkout@v3
+      - name: Testing
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.tests/integration'
+          snakefile: 'workflow/Snakefile'
+          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+      - name: Test report
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.tests/integration'
+          snakefile: 'workflow/Snakefile'
+          args: "--report report.zip"

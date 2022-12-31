@@ -10,13 +10,13 @@
 !.tests/integration
 !.tests/integration/config
 !.tests/integration/config/*
+!.tests/integration/config/*
 !.tests/integration/data
 !.tests/integration/data/*
-!.tests/integration/data/**
 !CITATION.cff
 !CODE_OF_CONDUCT.md
 !CONTRIBUTING.md
-!LICENSE
+!LICENSE.md
 !README.md
 !config
 !config/*
